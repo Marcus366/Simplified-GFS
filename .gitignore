@@ -1,5 +1,3 @@
 *.o
-Client
-MasterServer
 fetch.sh
 
