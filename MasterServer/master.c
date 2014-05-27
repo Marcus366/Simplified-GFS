@@ -1,5 +1,16 @@
 #include "gfs.h"
 
+/**
+ * Here is the MasterServer startup code.
+ * Master is responsible for the
+ * 1. file management:
+ * 		such as keep up the message about 
+ * 		filename(full path name) mapping to the chunk location
+ * 		(it is easy to use a tree to keep up )
+ * 2. intereact with client
+ * 
+ */
+
 int
 main(int argc, char **argv) {
 	int listenfd, connfd;
