@@ -1,12 +1,11 @@
 #ifndef __CHUNK_H__
 #define __CHUNK_H__
 
-#include "gfs.h"
 
 typedef struct chunk_s {
-	uint_64 uuid;
-	uint_32 chk_addr;
-	uint_16 chk_port;
+	uint64_t uuid;				/* the unique id of chunk    		*/
+	uint32_t chk_addr; 			/* chunk location server address 	*/
+	uint16_t chk_port; 			/* chunk port of the service 		*/
 } chunk_t;
 
 
