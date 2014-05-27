@@ -1,2 +1,4 @@
 *.o
+fetch.sh
+.DS_Store
 
