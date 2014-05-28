@@ -5,36 +5,65 @@
 
 void linklist_init(linklist_t **list) {
 	*list = (linklist_t*) malloc(sizeof(linklist_t));
-	(*list)->head = (linknode_t*) malloc(sizeof(linknode_t));
+	(*list)->head = (listnode_t*) malloc(sizeof(listnode_t));
 	(*list)->size = 0;
 }
 
 
-void linklist_insert(linklist_t *list, listnode_t *node, uint16_t pos) {
+void linklist_insert(linklist_t *list, void* elem, uint16_t pos) {
 	listnode_t *listnode = list->head;
 	listnode_t *listnode2 = listnode->next;
+	listnode_t *inserting = (listnode_t*) malloc(sizeof(listnode_t));
+	inserting->elem = elem;
 	while (pos--) {
 		listnode = listnode->next;
 		listnode2 = listnode2->next;
 	}
-	listnode->next = node;
-	node->next = listnode2;
+	listnode->next = inserting;
+	inserting->next = listnode2;
+	list->size++;
 }
 
 
-void linklist_push_back(linklist_t *list, listnode_t *node) {
+listnode_t *linklist_find(linklist_t *list, void* elem) {
 	listnode_t *listnode = list->head;
-	while (listnode->next != NULL) {
-		listnode->next = node;
+	while (listnode->next != NULL && listnode->elem != elem) {
+		listnode = listnode->next;
 	}
+	return listnode;
 }
 
 
-void linklist_push_front(linklist_t *list, listnode_t *node) {
+listnode_t *linklist_findFirst(linklist_t *list, void* elem) {
+	return list->head->next;
+}
+
+
+listnode_t *linklist_findNext(listnode_t *node) {
+	return node->next;
+}
+
+
+void linklist_push_back(linklist_t *list, void* elem) {
+	listnode_t *listnode = list->head;
+	listnode_t *inserting = (listnode_t*) malloc(sizeof(listnode_t));
+	inserting->elem = elem;
+	while (listnode->next != NULL) {
+		listnode = listnode->next;
+	}
+	listnode->next = inserting;
+	list->size++;
+}
+
+
+void linklist_push_front(linklist_t *list, void* elem) {
 	listnode_t *headnode = list->head;
 	listnode_t *firstnode = list->head->next;
-	headnode->next = node;
-	node->next = firstnode;
+	listnode_t *inserting = (listnode_t*) malloc(sizeof(listnode_t));
+	inserting->elem = elem;
+	headnode->next = inserting;
+	inserting->next = firstnode;
+	list->size++;
 }
 
 
@@ -64,9 +93,9 @@ void linklist_free(linklist_t **list) {
 	*list = NULL;
 }
 
-void linklist_print(linklist *list) {
+void linklist_print(linklist_t *list) {
 	listnode_t *listnode = list->head->next;
-	while (listnode->next != NULL) {
+	while (listnode != NULL) {
 		printf("%d\n",(int)listnode->elem);
 		listnode = listnode->next;
 	}
