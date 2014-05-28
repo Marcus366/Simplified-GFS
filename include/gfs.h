@@ -18,8 +18,5 @@
 
 #define CHUNK_SIZE		1024
 
-typedef unsigned long long uint_64;
-typedef unsigned int	   uint_32;
-typedef unsigned short	   uint_16;
 
 #endif

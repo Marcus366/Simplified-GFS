@@ -76,7 +76,7 @@ void start_up(const char *master_addr, in_port_t serv_port) {
 	memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(MASTER_PORT);
-	inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
+	inet_pton(AF_INET, master_addr, &servaddr.sin_addr);
 
 	if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1) {
 		perror("connect error");
@@ -84,7 +84,7 @@ void start_up(const char *master_addr, in_port_t serv_port) {
 	
 	sprintf(buf, "CHUNK HERE %u", serv_port);
 	printf("%s\n", buf);
-	if (write(sockfd, buf, strlen(buf) < 0) {
+	if (write(sockfd, buf, strlen(buf)) < 0) {
 		perror("write error");
 	}
 	close(sockfd);

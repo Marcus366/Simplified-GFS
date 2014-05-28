@@ -1,4 +1,5 @@
 *.o
 fetch.sh
 .DS_Store
-
+.tags
+.tags_sorted_by_files

@@ -1,0 +1,36 @@
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	ChunkServer/Makefile	/^CC = gcc$/;"	m
+CFLAGS	ChunkServer/Makefile	/^CFLAGS = -Wall $(INCLUDE)$/;"	m
+INCLUDE	ChunkServer/Makefile	/^INCLUDE = -I..\/include$/;"	m
+main	ChunkServer/chunk_server.c	/^main(int argc, char **argv) {$/;"	f
+start_up	ChunkServer/chunk_server.c	/^void start_up(const char *master_addr, in_port_t serv_port) {$/;"	f
+CC	Client/Makefile	/^CC = gcc$/;"	m
+CFLAGS	Client/Makefile	/^CFLAGS = -Wall $(INCLUDE)$/;"	m
+INCLUDE	Client/Makefile	/^INCLUDE = -I..\/include$/;"	m
+main	Client/client.c	/^main(int argc, char **argv) {$/;"	f
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+CC	MasterServer/Makefile	/^CC = gcc$/;"	m
+CFLAGS	MasterServer/Makefile	/^CFLAGS = -Wall $(INCLUDE)$/;"	m
+INCLUDE	MasterServer/Makefile	/^INCLUDE = -I..\/include$/;"	m
+__CHUNK_H__	MasterServer/chunk.h	2;"	d
+chk_addr	MasterServer/chunk.h	/^	uint32_t chk_addr; 			\/* chunk location server address 	*\/$/;"	m	struct:chunk_s
+chk_port	MasterServer/chunk.h	/^	uint16_t chk_port; 			\/* chunk port of the service 		*\/$/;"	m	struct:chunk_s
+chunk_s	MasterServer/chunk.h	/^typedef struct chunk_s {$/;"	s
+chunk_t	MasterServer/chunk.h	/^} chunk_t;$/;"	t	typeref:struct:chunk_s
+uuid	MasterServer/chunk.h	/^	uint64_t uuid;				\/* the unique id of chunk    		*\/$/;"	m	struct:chunk_s
+__FILE_H__	MasterServer/file.h	2;"	d
+file_s	MasterServer/file.h	/^typedef struct file_s {$/;"	s
+file_t	MasterServer/file.h	/^} file_t;$/;"	t	typeref:struct:file_s
+name	MasterServer/file.h	/^	char name[32]; \/* with at most 32 byte length name *\/$/;"	m	struct:file_s
+main	MasterServer/master.c	/^main(int argc, char **argv) {$/;"	f
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+CHUNK_SIZE	include/gfs.h	19;"	d
+LISTEN_BACKLOG	include/gfs.h	17;"	d
+MASTER_PORT	include/gfs.h	16;"	d
+__GFS_H__	include/gfs.h	2;"	d
+uint_16	include/gfs.h	/^typedef unsigned short	   uint_16;$/;"	t
+uint_32	include/gfs.h	/^typedef unsigned int	   uint_32;$/;"	t
+uint_64	include/gfs.h	/^typedef unsigned long long uint_64;$/;"	t
