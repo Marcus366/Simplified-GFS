@@ -1,6 +1,8 @@
 #ifndef __FILE_H__
 #define __FILE_H__
 
+struct node_t;
+
 #define FILE_TYPE_FILE 1
 #define FILE_TYPE_FOLDER 2
 
@@ -11,8 +13,8 @@ typedef struct file_s {
 	/* list of chunks here */
 } file_t;
 
-
-extern file_t* get_file_by_path(const char *full_path);
+extern void file_new(char* name, int type);
+extern void file_create(const char *path, mode_t mode, int type, node_t* root);
 extern int file_equal(file_t f1,file_t f2);  /* return 1 when equal, 0 when not equal. */
 extern void file_free(file_t **file);
 
