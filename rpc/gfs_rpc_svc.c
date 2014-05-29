@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "square.h"
+#include "gfs_rpc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -17,10 +17,13 @@
 #endif
 
 static void
-square_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
+clientprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		square_in squareproc_1_arg;
+		open_args ask_mstr_open_1_arg;
+		close_args ask_gfs_close_1_arg;
+		read_args gfs_read_1_arg;
+		write_args gfs_write_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -31,10 +34,28 @@ square_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
 
-	case SQUAREPROC:
-		_xdr_argument = (xdrproc_t) xdr_square_in;
-		_xdr_result = (xdrproc_t) xdr_square_out;
-		local = (char *(*)(char *, struct svc_req *)) squareproc_1_svc;
+	case ask_mstr_open:
+		_xdr_argument = (xdrproc_t) xdr_open_args;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_open_1_svc;
+		break;
+
+	case ask_gfs_close:
+		_xdr_argument = (xdrproc_t) xdr_close_args;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) ask_gfs_close_1_svc;
+		break;
+
+	case gfs_read:
+		_xdr_argument = (xdrproc_t) xdr_read_args;
+		_xdr_result = (xdrproc_t) xdr_long;
+		//local = (char *(*)(char *, struct svc_req *)) gfs_read_1_svc;
+		break;
+
+	case gfs_write:
+		_xdr_argument = (xdrproc_t) xdr_write_args;
+		_xdr_result = (xdrproc_t) xdr_long;
+		//local = (char *(*)(char *, struct svc_req *)) gfs_write_1_svc;
 		break;
 
 	default:
@@ -62,15 +83,15 @@ main (int argc, char **argv)
 {
 	register SVCXPRT *transp;
 
-	pmap_unset (SQUARE_PROG, SQUARE_VER);
+	pmap_unset (CLIENTPROG, VERSION);
 
 	transp = svcudp_create(RPC_ANYSOCK);
 	if (transp == NULL) {
 		fprintf (stderr, "%s", "cannot create udp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, SQUARE_PROG, SQUARE_VER, square_prog_1, IPPROTO_UDP)) {
-		fprintf (stderr, "%s", "unable to register (SQUARE_PROG, SQUARE_VER, udp).");
+	if (!svc_register(transp, CLIENTPROG, VERSION, clientprog_1, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (CLIENTPROG, VERSION, udp).");
 		exit(1);
 	}
 
@@ -79,8 +100,8 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "cannot create tcp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, SQUARE_PROG, SQUARE_VER, square_prog_1, IPPROTO_TCP)) {
-		fprintf (stderr, "%s", "unable to register (SQUARE_PROG, SQUARE_VER, tcp).");
+	if (!svc_register(transp, CLIENTPROG, VERSION, clientprog_1, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (CLIENTPROG, VERSION, tcp).");
 		exit(1);
 	}
 

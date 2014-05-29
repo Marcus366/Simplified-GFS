@@ -53,7 +53,6 @@ typedef  void (*listnode_free_func)(void **);
 		       __tmp = __tmp->next)
 
 
-
 extern void gfs_list_init(gfs_list_t **list);
 extern void gfs_list_insert(gfs_list_t *list, void* elem, uint16_t pos);
 /*
@@ -69,9 +68,6 @@ extern listnode_t *gfs_list_findFirst(gfs_list_t *list, void* elem);
 extern listnode_t *gfs_list_findNext(listnode_t *node);
 extern void gfs_list_free(gfs_list_t **list, listnode_free_func func); 
 extern void gfs_list_print(gfs_list_t *list);
-
-
-
 
 
 #endif

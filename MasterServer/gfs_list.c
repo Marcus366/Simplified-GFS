@@ -96,6 +96,9 @@ void gfs_list_free(gfs_list_t **list, listnode_free_func func) {
 	while (listnode != NULL){
 		deleting = listnode;
 		listnode = listnode->next;
+		if (func != NULL) {
+			(*func)(deleting->elem);
+		}
 		free(deleting);
 	}
 	free((*list)->head);
