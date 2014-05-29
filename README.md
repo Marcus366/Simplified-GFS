@@ -19,7 +19,7 @@ int close(int fd);
 ssize_t read(int fd, void *buf, size_t count);
 ssize_t write(int fd, const void *buf, size_t nbytes);
 
-which is implemented in the distributed way and cover the details
+which is implemented in the distributed way but cover the details
 
 ================================================================================
 
@@ -27,7 +27,7 @@ DETAILS
 
 OPEN with O_CREAT
 clnt first make a remote call OPEN.
-matr receive the call and do:
+mstr receive the call and do:
 1. Create a new node of filetree in a proper position. 
 2. Init the file_t struct, make a new chunk of file_t. Then the mstr would pick up a chunk server,
     connect it and tell the chunk server open the file which name is uuid, remeber to keep the

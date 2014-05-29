@@ -1,11 +1,19 @@
-#include "square.h"
+#include "gfs_rpc.h"
 #include <stdio.h>
+#include <fcntl.h>
 
-square_out*
-squareproc_1_svc(square_in *pin, struct svc_req *rqstp) {
-	static square_out out;
+int *
+gfs_open_1_svc(open_args *arg, struct svc_req *req) {
+	static int fd;
 
-	out.res1 = pin->arg1 * pin->arg1;
-	fprintf(stdout, "input: %ld\n", pin->arg1);
-	return (&out);
+	printf("path: %s\n", arg->path);
+	if (arg->oflags & O_CREAT) {
+		printf("O_CREAT\n");
+	}
+	fd = open(arg->path, arg->oflags, arg->mode);
+	printf("open success\n");
+	printf("fd: %d\n", fd);
+	close(fd);
+
+	return &fd;
 }
