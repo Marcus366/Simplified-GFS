@@ -15,7 +15,7 @@ int file_equal(file_t *lhs,file_t *rhs) {
 
 void file_free(file_t **file) {
 	free(*file);
-	file = NULL;
+	*file = NULL;
 }
 
 

@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-#include "square.h"
-
-square_out * prog_1_svc(square_in *in, struct svc_req *req) {
-	static square_out out;
-	out.res = in->arg * in->arg;
-	return &out;
-=======
 #include "gfs_rpc.h"
 #include <stdio.h>
 #include <fcntl.h>
@@ -24,5 +16,4 @@ gfs_open_1_svc(open_args *arg, struct svc_req *req) {
 	close(fd);
 
 	return &fd;
->>>>>>> 7c1fbdb723e44449e80cbf2106290f40553cf043
 }
