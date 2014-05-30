@@ -12,7 +12,7 @@ typedef struct listnode_s {
 
 typedef struct linklist_s {
 	struct listnode_s*   head;
-	uint16_t 	  size;
+	uint16_t 	  		 size;
 } linklist_t;
 
 

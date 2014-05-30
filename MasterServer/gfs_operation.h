@@ -14,6 +14,6 @@ extern int gfs_close(int fd);
 
 extern ssize_t gfs_read(int fd, void *buf, size_t count);
 
-extern ssize_t gfs_write(int fd, const void *buf, size_t nbytes) 
+extern ssize_t gfs_write(int fd, const void *buf, size_t nbytes);
 
 #endif

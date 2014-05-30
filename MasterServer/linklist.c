@@ -11,16 +11,23 @@ void linklist_init(linklist_t **list) {
 
 
 void linklist_insert(linklist_t *list, void* elem, uint16_t pos) {
-	listnode_t *listnode = list->head;
-	listnode_t *listnode2 = listnode->next;
-	listnode_t *inserting = (listnode_t*) malloc(sizeof(listnode_t));
-	inserting->elem = elem;
-	while (pos--) {
-		listnode = listnode->next;
-		listnode2 = listnode2->next;
+	if (pos < 0 || pos >= list->size) {
+		return ;
 	}
-	listnode->next = inserting;
-	inserting->next = listnode2;
+
+	listnode_t *pre, *cur, *insert;
+
+	insert = (listnode_t*) malloc(sizeof(listnode_t));
+	insert->elem = elem;
+
+	pre = list->head;
+	cur = pre->next;
+	while (pos--) {
+		pre = pre->next;
+		cur = cur->next;
+	}
+	pre->next = inserting;
+	inserting->next = cur;
 	list->size++;
 }
 
@@ -34,12 +41,12 @@ listnode_t *linklist_find(linklist_t *list, void* elem) {
 }
 
 
-listnode_t *linklist_findFirst(linklist_t *list, void* elem) {
+listnode_t* linklist_findFirst(linklist_t *list, void* elem) {
 	return list->head->next;
 }
 
 
-listnode_t *linklist_findNext(listnode_t *node) {
+listnode_t* linklist_findNext(listnode_t *node) {
 	return node->next;
 }
 
@@ -92,6 +99,7 @@ void linklist_free(linklist_t **list) {
 	free(*list);
 	*list = NULL;
 }
+
 
 void linklist_print(linklist_t *list) {
 	listnode_t *listnode = list->head->next;
