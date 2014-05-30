@@ -5,7 +5,9 @@
 #include "gfs_list.h"
 
 
-struct file_t;
+extern struct file_s;
+typedef struct file_s file_t;
+
 
 typedef struct node_s {
 	file_t			*file;

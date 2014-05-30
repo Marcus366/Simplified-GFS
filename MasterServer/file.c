@@ -1,13 +1,15 @@
 #include "file.h"
-#include "file_tree.h"
+#include "filetree.h"
 #include <string.h>
 #include <stdlib.h>
 
 
 void file_new(file_t **file, char* name, int type) {
 	*file = (file_t*)malloc(sizeof(file_t));
-	(*file)->name = name;
 	(*file)->type = type;
+
+	strncpy((*file)->name, name, 32);
+	((*file)->name)[33] = 0;
 }
 
 
@@ -41,6 +43,6 @@ void file_create(const char *path, mode_t mode, int type, node_t *root) {
 	}
 	strncpy(temp, full_path + st, count - st);
 
-	file_new(file, temp, type);
-	node = create_node(father, file);
+	file_new(&file, temp, type);
+	create_node(father, file);
 }
