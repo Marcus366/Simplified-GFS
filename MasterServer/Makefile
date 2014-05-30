@@ -1,11 +1,17 @@
-CC = gcc
-CFLAGS = -Wall $(INCLUDE)
-INCLUDE = -I../include
+CC =gcc
+CFLAGS =-Wall $(INCLUDE)
+INCLUDE =-I../include -I../rpc
 
-MasterServer: master.c ../include/gfs.h
-	$(CC) $(CFLAGS) $< -o $ MasterServer
+OBJS =gfs_mstr.o file.o filetree.o gfs_chk.o gfs_list.o
+
+%o: %c
+	$(CC) $(CFLAGS) -c $<
+
+
+mstr: $(OBJS) ../include/gfs.h ../rpc/gfs_rpc.h
+	$(CC) $(CFLAGS) $(OBJS) -o $ mstr
 
 .PHONY: clean
 
 clean:
-	rm MasterServer
+	find -name "*.o" |xargs rm

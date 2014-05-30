@@ -2,14 +2,17 @@
 #define __FILETREE_H__
 
 
-#include "linklist.h"
+#include "gfs_list.h"
 
-struct file_t;
+
+extern struct file_s;
+typedef struct file_s file_t;
+
 
 typedef struct node_s {
-	file_t 		*file;
-	node_s    *father;  /* daddy */
-	linklist   *child;	/* data */
+	file_t			*file;
+	struct node_s	*father;	/* daddy */
+	gfs_list_t		*child;		/* data */
 } node_t;
 
 extern void create_node(node_t *father, file_t *file);
@@ -20,4 +23,3 @@ extern void free_node(node_t **node);
 extern file_t* get_file_by_path(node_t *root, const char *full_path);
 
 #endif
-         

@@ -36,7 +36,7 @@ listnode_t *gfs_list_find(gfs_list_t *list, void* elem) {
 }
 
 
-listnode_t *gfs_list_findFirst(gfs_list_t *list, void* elem) {
+listnode_t *gfs_list_findFirst(gfs_list_t *list) {
 	return list->head->next;
 }
 
@@ -69,7 +69,7 @@ void gfs_list_push_front(gfs_list_t *list, void* elem) {
 }
 */
 
-void gfs_list_delete(gfs_list_t *list, void *elem, listnode_free_func func) {
+void gfs_list_delete(gfs_list_t *list, void *elem) {
 	listnode_t *pre, *cur;
 
 	pre = list->head;
@@ -82,23 +82,17 @@ void gfs_list_delete(gfs_list_t *list, void *elem, listnode_free_func func) {
 	if (cur != NULL) {
 		--list->size;
 		pre->next = cur->next;
-		if (func != NULL) {
-			(*func)(&cur->elem);
-		}
 		free(cur);
 	}
 }
 
 
-void gfs_list_free(gfs_list_t **list, listnode_free_func func) {
+void gfs_list_free(gfs_list_t **list) {
 	listnode_t *listnode = (*list)->head->next;
 	listnode_t *deleting = listnode;
 	while (listnode != NULL){
 		deleting = listnode;
 		listnode = listnode->next;
-		if (func != NULL) {
-			(*func)(deleting->elem);
-		}
 		free(deleting);
 	}
 	free((*list)->head);

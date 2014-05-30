@@ -1,14 +1,16 @@
 #include "file.h"
-#include "string.h"
-#include "file_tree.h"
+#include "filetree.h"
+#include <string.h>
+#include <stdlib.h>
 
 
-void file_new(file_t* file, char* name, int type) {
-	file = (file_t*)malloc(sizeof(file_t));
-	file->name = name;
-	file->type = type;
+void file_new(file_t **file, char* name, int type) {
+	*file = (file_t*)malloc(sizeof(file_t));
+	(*file)->type = type;
+
+	strncpy((*file)->name, name, 32);
+	((*file)->name)[33] = 0;
 }
-
 
 
 int file_equal(file_t *lhs,file_t *rhs) {
@@ -20,7 +22,7 @@ int file_equal(file_t *lhs,file_t *rhs) {
 
 void file_free(file_t **file) {
 	free(*file);
-	file = NULL;
+	*file = NULL;
 }
 
 
@@ -41,8 +43,6 @@ void file_create(const char *path, mode_t mode, int type, node_t *root) {
 	}
 	strncpy(temp, full_path + st, count - st);
 
-	file_new(file, temp, type);
-	node = create_node(father, file);
+	file_new(&file, temp, type);
+	create_node(father, file);
 }
-
-
