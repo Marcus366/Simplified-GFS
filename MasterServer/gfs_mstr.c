@@ -46,13 +46,13 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	case ask_mstr_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
 		_xdr_result = (xdrproc_t) xdr_long;
-		//local = (char *(*)(char *, struct svc_req *)) gfs_read_1_svc;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_read_1_svc;
 		break;
 
 	case ask_mstr_write:
 		_xdr_argument = (xdrproc_t) xdr_write_args;
 		_xdr_result = (xdrproc_t) xdr_long;
-		//local = (char *(*)(char *, struct svc_req *)) gfs_write_1_svc;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_write_1_svc;
 		break;
 
 	default:
@@ -75,6 +75,13 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
+
+CLIENT *cl;
+
+static void
+init_client() {
+	
+}
 
 int
 main (int argc, char **argv)
@@ -107,4 +114,25 @@ main (int argc, char **argv)
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);
 	/* NOTREACHED */
+}
+
+
+int on_clnt_open(const char *path, int oflags, mode_t mode) {
+	printf("path: %s\n", path);
+	return 0;
+}
+
+
+int on_clnt_close(int fd) {
+	return 0;
+}
+
+
+ssize_t on_clnt_read(int fd, void *buf, size_t count) {
+
+}
+
+
+ssize_t on_clnt_write(int fd, const void *buf, size_t nbytes) {
+
 }

@@ -8,9 +8,9 @@ OBJS =gfs_clnt.o gfs_fcntl.o rpc_clnt.o ../rpc/gfs_rpc_xdr.o
 	$(CC) $(CFLAGS) -c $<
 
 client: $(OBJS) gfs_clnt.h gfs_fcntl.h ../include/gfs_rpc.h
-	$(CC) $(CFLAGS)  $(OBJS) -o $@
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
-rpc_clnt.o: rpc_clnt.o ../rpc/gfs_rpc.h
+rpc_clnt.o: rpc_clnt.c ../rpc/gfs_rpc.h
 	$(CC) $(CFLAGS) -c $<
 
 
