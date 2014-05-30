@@ -7,9 +7,9 @@ file_t* get_file_by_path(const char *full_path) {
 
 
 
-int file_equal(file_t *f1,file_t *f2) {
-	if(strcmp(f1->name, f2->name) != 0) return 0;
-	if(f1->type != f2->type) return 0;
+int file_equal(file_t *lhs,file_t *rhs) {
+	if(strcmp(lhs->name, rhs->name) != 0) return 0;
+	if(lhs->type != rhs->type) return 0;
 	return 1;
 }
 
