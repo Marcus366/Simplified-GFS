@@ -37,8 +37,8 @@ clnt first make a remote call OPEN.mstr receive the call and do:
 2. Init the file_t struct, make a new chunk of file_t. Then the mstr would pick up a chunk server, connect it and tell the chunk server open the file which name is uuid, remeber to keep the chunk fd.
 
 3. Find the minimal unused fd(this fd is gfs level's fd, not the same as system fd), mapping it to the current file_t*, finally return the fd to clnt.
-
 clnt receive the fd above 0, it means that OPEN is alright, maybe clnt will write/read later or may directly close it although it behaviour has no means.
+
 
 Here we dicuss WRITE first.
 

@@ -30,18 +30,19 @@ void file_create(const char *path, mode_t mode, int type, node_t *root) {
 	node_t *node;
 	node_t *father;
 	file_t *file;
+	int count = 0,st = 0;
+	char temp[33];
 
 	father = root;
-	char temp[33];
-	while(full_path[count] != '\0') {
-		if(full_path[count] == '/') {
-			strncpy(temp, full_path + st, count - st);
+	while(path[count] != '\0') {
+		if(path[count] == '/') {
+			strncpy(temp, path + st, count - st);
 			father = find_node_by_name(node, temp);
 			st = count + 1;
 		}
 		count++;
 	}
-	strncpy(temp, full_path + st, count - st);
+	strncpy(temp, path + st, count - st);
 
 	file_new(&file, temp, type);
 	create_node(father, file);
