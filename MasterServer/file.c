@@ -1,10 +1,10 @@
 #include "file.h"
-#include "string.h"
+#include <string.h>
+#include <stdlib.h>
 
 file_t* get_file_by_path(const char *full_path) {
-
+	return NULL;
 }
-
 
 
 int file_equal(file_t *lhs,file_t *rhs) {
@@ -13,9 +13,8 @@ int file_equal(file_t *lhs,file_t *rhs) {
 	return 1;
 }
 
+
 void file_free(file_t **file) {
 	free(*file);
 	*file = NULL;
 }
-
-

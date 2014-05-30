@@ -13,7 +13,8 @@ typedef struct file_s {
 
 
 extern file_t* get_file_by_path(const char *full_path);
-extern int file_equal(file_t f1,file_t f2);  /* return 1 when equal, 0 when not equal. */
+extern int file_equal(file_t*, file_t* );  /* return 1 when equal, 0 when not equal. */
 extern void file_free(file_t **file);
+
 
 #endif

@@ -1,5 +1,6 @@
 #include "gfs_rpc.h"
 #include "gfs_clnt.h"
+#include <sys/types.h>
 
 int gfs_open(const char *path, int oflags, mode_t mode) {
 	int *pfd;
@@ -20,9 +21,9 @@ int gfs_open(const char *path, int oflags, mode_t mode) {
 	}
 	printf("result: %d\n", *pfd);
 
-
 	return (*pfd);
 }
+
 
 int gfs_close(int fd) {
 	int *pfd;

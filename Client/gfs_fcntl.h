@@ -6,6 +6,7 @@
 #ifndef __GFS_FCNTL_H__
 #define __GFS_FCNTL_H__
 
+#include <fcntl.h>
 
 extern int gfs_open(const char *path, int oflags, mode_t mode);
 
