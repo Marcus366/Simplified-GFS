@@ -1,4 +1,5 @@
 #include "filetree.h"
+#include "file.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -35,7 +36,7 @@ void delete_node(node_t **node) {
 node_t* find_node(node_t *root, file_t *file) {
 	listnode_t *listnode;
 
-	listnode = linklist_findFirst((*node)->child);
+	listnode = linklist_findFirst((root)->child);
 	while( listnode != NULL) {
 		node_t *tnode = (node_t*)listnode->elem;
 		if( file_equal(tnode->file, file) ) {
@@ -44,7 +45,7 @@ node_t* find_node(node_t *root, file_t *file) {
 		listnode = listnode->next;
 	}
 
-	listnode = gfs_list_findFirst((*node)->child);
+	listnode = gfs_list_findFirst((root)->child);
 
 	while( listnode != NULL) {
 		node_t *tnode = (node_t*)listnode->elem;
@@ -59,7 +60,7 @@ node_t* find_node(node_t *root, file_t *file) {
 node_t* find_node_by_name(node_t *root, char *name) {
 	listnode_t *listnode;
 
-	listnode = linklist_findFirst((*node)->child);
+	listnode = linklist_findFirst((root)->child);
 
 	while( listnode != NULL) {
 		node_t *tnode = (node_t*)listnode->elem;
@@ -69,10 +70,12 @@ node_t* find_node_by_name(node_t *root, char *name) {
 		listnode = listnode->next;
 	}
 	
-	listnode = linklist_findFirst((*node)->child);
+	listnode = linklist_findFirst((root)->child);
 	
 	while( listnode != NULL) {
 		node_t *tnode = (node_t*)listnode->elem;
+		file_t* file;
+		file_new(&file, name, 1);             //type should be changed
 		node_t* result = find_node(tnode, file);
 		if(result != NULL)return result;
 		listnode = listnode->next;

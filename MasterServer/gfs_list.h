@@ -64,7 +64,7 @@ extern void gfs_list_delete(gfs_list_t *list, void* elem);
 extern listnode_t *gfs_list_find(gfs_list_t *list);
 /* I am not sure the following two function is necessary while we hava gfs_list_foreach */
 /* If you are sure it is of no use, you can comment them 			          */
-extern listnode_t *gfs_list_findFirst(gfs_list_t *list, void* elem);
+extern listnode_t *gfs_list_findFirst(gfs_list_t *list);
 extern listnode_t *gfs_list_findNext(listnode_t *node);
 extern void gfs_list_free(gfs_list_t **list); 
 extern void gfs_list_print(gfs_list_t *list);

@@ -54,13 +54,13 @@ gfs_node_t* find_node(gfs_node_t *root, file_t *file) {
 }
 
 
-node_t* find_node_by_name(node_t *root, char *name) {
+gfs_node_t* find_node_by_name(gfs_node_t *root, char *name) {
 	listnode_t *listnode;
 
 	listnode = linklist_findFirst((*node)->child);
 
 	while( listnode != NULL) {
-		node_t *tnode = (node_t*)listnode->elem;
+		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
 		if( strcmp(name, tnode->file->name) == 0 ) {
 			return tnode;
 		}
@@ -70,8 +70,8 @@ node_t* find_node_by_name(node_t *root, char *name) {
 	listnode = linklist_findFirst((*node)->child);
 	
 	while( listnode != NULL) {
-		node_t *tnode = (node_t*)listnode->elem;
-		node_t* result = find_node(tnode, file);
+		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
+		gfs_node_t* result = find_node(tnode, file);
 		if(result != NULL)return result;
 		listnode = listnode->next;
 	}
@@ -79,8 +79,8 @@ node_t* find_node_by_name(node_t *root, char *name) {
 }
 
 
-file_t* get_file_by_path(node_t *root, const char *full_path) {
-	node_t* node = NULL;
+file_t* get_file_by_path(gfs_node_t *root, const char *full_path) {
+	gfs_node_t* node = NULL;
 	int count,st;
 
 	node = root;
@@ -106,7 +106,7 @@ file_t* get_file_by_path(node_t *root, const char *full_path) {
 	return node->file;
 }
 
-void free_node(node_t **node) {
+void free_node(gfs_node_t **node) {
 	file_free(&((*node)->file));
 	linklist_free(&((*node)->child));
 	(*node)->father = NULL;
