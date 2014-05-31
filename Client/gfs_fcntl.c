@@ -1,12 +1,13 @@
 #include "gfs_rpc.h"
 #include "gfs_clnt.h"
+#include <string.h>
 #include <sys/types.h>
 
 int gfs_open(const char *path, int oflags, mode_t mode) {
 	int *pfd;
 	open_args arg;
 
-	arg.oflags =  oflags;
+	arg.oflags = oflags;
 	arg.mode =  mode;
 	arg.path = (char*)malloc(strlen(path) + 1);
 	strcpy(arg.path, path);
@@ -43,10 +44,27 @@ int gfs_close(int fd) {
 
 
 ssize_t gfs_read(int fd, void *buf, size_t count) {
+	/* not implement */
+	//static ssize_t *psize;
 	return 0;
 }
 
 
 ssize_t gfs_write(int fd, const void *buf, size_t nbytes) {
-	return 0;
+	int *psize;
+	write_args arg;
+
+	arg.fd = fd;
+	arg.nbytes = nbytes;
+	arg.buf = malloc(nbytes);
+	memcpy(arg.buf, buf, nbytes);
+
+	psize = ask_mstr_write_1(&arg, mstr_clnt);
+
+	if (psize == NULL) {
+		fprintf(stderr, "write return NULL");
+		return -1;
+	}
+
+	return (ssize_t)(*psize);
 }

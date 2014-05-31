@@ -2,7 +2,7 @@ CC =gcc
 CFLAGS =-Wall $(INCLUDE)
 INCLUDE =-I../include -I../rpc
 
-OBJS =gfs_mstr.o rpc_mstr.o ../rpc/gfs_rpc_xdr.o
+OBJS =gfs_mstr_svc.o rpc_mstr.o gfs_list.o ../rpc/gfs_rpc_xdr.o
 
 %o: %c
 	$(CC) $(CFLAGS) -c $<

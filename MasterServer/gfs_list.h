@@ -60,8 +60,8 @@ this two are replaced by two "define" above with a esaier implementation
 extern void gfs_list_push_back(gfs_list_t *list, void* elem);
 extern void gfs_list_push_front(gfs_list_t *list, void* elem);
 */
-extern void gfs_list_delete(gfs_list_t *list, void* elem);
-extern listnode_t *gfs_list_find(gfs_list_t *list);
+extern void gfs_list_delete(gfs_list_t *list, void *elem);
+extern listnode_t *gfs_list_find(gfs_list_t *list, void *elem);
 /* I am not sure the following two function is necessary while we hava gfs_list_foreach */
 /* If you are sure it is of no use, you can comment them 			          */
 extern listnode_t *gfs_list_findFirst(gfs_list_t *list);

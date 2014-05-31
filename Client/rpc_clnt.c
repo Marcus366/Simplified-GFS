@@ -34,30 +34,30 @@ ask_mstr_close_1(close_args *argp, CLIENT *clnt)
 	return (&clnt_res);
 }
 
-long *
+int*
 ask_mstr_read_1(read_args *argp, CLIENT *clnt)
 {
-	static long clnt_res;
+	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
 	if (clnt_call (clnt, ask_mstr_read,
 		(xdrproc_t) xdr_read_args, (caddr_t) argp,
-		(xdrproc_t) xdr_long, (caddr_t) &clnt_res,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
 	}
 	return (&clnt_res);
 }
 
-long *
+int*
 ask_mstr_write_1(write_args *argp, CLIENT *clnt)
 {
-	static long clnt_res;
+	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
 	if (clnt_call (clnt, ask_mstr_write,
 		(xdrproc_t) xdr_write_args, (caddr_t) argp,
-		(xdrproc_t) xdr_long, (caddr_t) &clnt_res,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
 	}
