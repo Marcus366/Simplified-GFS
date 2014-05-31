@@ -11,7 +11,7 @@ void gfs_list_init(gfs_list_t **list) {
 
 
 void gfs_list_insert(gfs_list_t *list, void* elem, uint16_t pos) {
-	listnode_t *pre, *cur;
+	listnode_t *pre;
 
 	pre = list->head;
 	if (elem != NULL && pos >= 0 && pos <= list->size) {

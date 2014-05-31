@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "gen/gfs_rpc.h"
+#include "gfs_rpc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -48,13 +48,13 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 	case ask_mstr_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
-		_xdr_result = (xdrproc_t) xdr_long;
+		_xdr_result = (xdrproc_t) xdr_int;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_read_1_svc;
 		break;
 
 	case ask_mstr_write:
 		_xdr_argument = (xdrproc_t) xdr_write_args;
-		_xdr_result = (xdrproc_t) xdr_long;
+		_xdr_result = (xdrproc_t) xdr_int;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_write_1_svc;
 		break;
 
@@ -126,6 +126,54 @@ mstr_chk_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
+static void
+chk_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
+{
+	union {
+		char *reg_chk_1_arg;
+		char *unreg_chk_1_arg;
+	} argument;
+	char *result;
+	xdrproc_t _xdr_argument, _xdr_result;
+	char *(*local)(char *, struct svc_req *);
+
+	switch (rqstp->rq_proc) {
+	case NULLPROC:
+		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
+		return;
+
+	case reg_chk:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) reg_chk_1_svc;
+		break;
+
+	case unreg_chk:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) unreg_chk_1_svc;
+		break;
+
+	default:
+		svcerr_noproc (transp);
+		return;
+	}
+	memset ((char *)&argument, 0, sizeof (argument));
+	if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+		svcerr_decode (transp);
+		return;
+	}
+	result = (*local)((char *)&argument, rqstp);
+	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) _xdr_result, result)) {
+		svcerr_systemerr (transp);
+	}
+	if (!svc_freeargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+		fprintf (stderr, "%s", "unable to free arguments");
+		exit (1);
+	}
+	return;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -133,6 +181,7 @@ main (int argc, char **argv)
 
 	pmap_unset (CLNT_MSTR_PROG, VERSION);
 	pmap_unset (MSTR_CHK_PROG, VERSION);
+	pmap_unset (CHK_MSTR_PROG, VERSION);
 
 	transp = svcudp_create(RPC_ANYSOCK);
 	if (transp == NULL) {
@@ -147,6 +196,10 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "unable to register (MSTR_CHK_PROG, VERSION, udp).");
 		exit(1);
 	}
+	if (!svc_register(transp, CHK_MSTR_PROG, VERSION, chk_mstr_prog_1, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (CHK_MSTR_PROG, VERSION, udp).");
+		exit(1);
+	}
 
 	transp = svctcp_create(RPC_ANYSOCK, 0, 0);
 	if (transp == NULL) {
@@ -159,6 +212,10 @@ main (int argc, char **argv)
 	}
 	if (!svc_register(transp, MSTR_CHK_PROG, VERSION, mstr_chk_prog_1, IPPROTO_TCP)) {
 		fprintf (stderr, "%s", "unable to register (MSTR_CHK_PROG, VERSION, tcp).");
+		exit(1);
+	}
+	if (!svc_register(transp, CHK_MSTR_PROG, VERSION, chk_mstr_prog_1, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (CHK_MSTR_PROG, VERSION, tcp).");
 		exit(1);
 	}
 

@@ -11,21 +11,21 @@ struct close_args {
 struct read_args {
 	int fd;
 	char *buf;
-	long count;
+	unsigned int count;
 };
 
 struct write_args {
 	int fd;
 	char *buf;
-	long nbytes;
+	unsigned int nbytes;
 };
 
 program CLNT_MSTR_PROG {
 	version VERSION {
 		int ask_mstr_open(open_args) 	= 1;
 		int ask_mstr_close(close_args) 	= 2;
-		long ask_mstr_read(read_args) 	= 3;
-		long ask_mstr_write(write_args) 	= 4;
+		int ask_mstr_read(read_args) 	= 3;
+		int ask_mstr_write(write_args) 	= 4;
 	} = 1;
 } = 0x31230000;
 
@@ -35,3 +35,10 @@ program MSTR_CHK_PROG {
 		int ask_chk_close(close_args) 	= 2;
 	} = 1;
 } = 0x31230001;
+
+program CHK_MSTR_PROG {
+	version VERSION {
+		int reg_chk(string)		= 1;
+		int unreg_chk(string)	= 2;
+	} = 1;
+} = 0x31230002;

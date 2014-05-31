@@ -1,11 +1,15 @@
 CC = gcc
 CFLAGS = -Wall $(INCLUDE)
 INCLUDE = -I../include
+OBJS =gfs_chk_svc.o rpc_chk.o ../rpc/gfs_rpc_xdr.o
 
-ChunkServer: chunk_server.c ../include/gfs.h
-	$(CC) $(CFLAGS) $< -o $ ChunkServer
+%o: %c
+	$(CC) $(CFLAGS) -c $<
+
+chk: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $ $@
 
 .PHONY: clean
 
 clean:
-	rm ChunkServer
+	rm chk

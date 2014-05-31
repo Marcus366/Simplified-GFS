@@ -96,6 +96,28 @@ extern  int * ask_chk_close_1_svc();
 extern int mstr_chk_prog_1_freeresult ();
 #endif /* K&R C */
 
+#define CHK_MSTR_PROG 0x31230002
+#define VERSION 1
+
+#if defined(__STDC__) || defined(__cplusplus)
+#define reg_chk 1
+extern  int * reg_chk_1(char **, CLIENT *);
+extern  int * reg_chk_1_svc(char **, struct svc_req *);
+#define unreg_chk 2
+extern  int * unreg_chk_1(char **, CLIENT *);
+extern  int * unreg_chk_1_svc(char **, struct svc_req *);
+extern int chk_mstr_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+
+#else /* K&R C */
+#define reg_chk 1
+extern  int * reg_chk_1();
+extern  int * reg_chk_1_svc();
+#define unreg_chk 2
+extern  int * unreg_chk_1();
+extern  int * unreg_chk_1_svc();
+extern int chk_mstr_prog_1_freeresult ();
+#endif /* K&R C */
+
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)

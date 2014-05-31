@@ -1,6 +1,7 @@
 #include "gfs_fcntl.h"
 #include "gfs_rpc.h"
 #include <stdio.h>
+#include <string.h>
 
 
 CLIENT *mstr_clnt;
@@ -25,6 +26,12 @@ main(int argc, char **argv) {
 	
 	fd = gfs_open(argv[2], O_CREAT | O_RDWR, 0);
 	printf("open the file of fd: %d\n", fd);
+
+	char buf[256];
+	while (gets(buf)) {
+		printf("write %d char: %s\n", strlen(buf), buf);
+		gfs_write(1, buf, strlen(buf) + 1);
+	}
 
 	return (0);
 }

@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "gen/gfs_rpc.h"
+#include "../include/gfs_rpc.h"
 
 bool_t
 xdr_open_args (XDR *xdrs, open_args *objp)
@@ -36,9 +36,7 @@ xdr_read_args (XDR *xdrs, read_args *objp)
 
 	 if (!xdr_int (xdrs, &objp->fd))
 		 return FALSE;
-	 if (!xdr_pointer (xdrs, (char **)&objp->buf, sizeof (char), (xdrproc_t) xdr_char))
-		 return FALSE;
-	 if (!xdr_long (xdrs, &objp->count))
+	 if (!xdr_bytes (xdrs, (char **)&objp->buf, &objp->count, ~0))
 		 return FALSE;
 	return TRUE;
 }
@@ -50,9 +48,7 @@ xdr_write_args (XDR *xdrs, write_args *objp)
 
 	 if (!xdr_int (xdrs, &objp->fd))
 		 return FALSE;
-	 if (!xdr_pointer (xdrs, (char **)&objp->buf, sizeof (char), (xdrproc_t) xdr_char))
-		 return FALSE;
-	 if (!xdr_long (xdrs, &objp->nbytes))
+	 if (!xdr_bytes (xdrs, (char **)&objp->buf, &objp->nbytes, ~0))
 		 return FALSE;
 	return TRUE;
 }

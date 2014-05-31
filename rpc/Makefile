@@ -12,9 +12,6 @@ RPC_OBJS =gfs_rpc_xdr.o
 	$(CC) $(CFLAGS) -c $<
 
 all: $(RPC_OBJS)
-	#rpcgen gen/gfs_rpc.x
-	#cp gen/gfs_rpc.h ./
-	#cp gen/gfs_rpc_xdr.c ./ 
 
 
 #client: client.c gfs_rpc.h gfs_rpc_xdr.c gfs_rpc_clnt.c
