@@ -1,6 +1,8 @@
 #include "gfs_rpc.h"
 #include "gfs_clnt.h"
 #include <sys/types.h>
+#include <stdio.h>
+#include <stddef.h>
 
 int gfs_open(const char *path, int oflags, mode_t mode) {
 	int *pfd;

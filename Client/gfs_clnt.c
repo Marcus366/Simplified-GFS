@@ -1,5 +1,6 @@
 #include "gfs_fcntl.h"
 #include "gfs_rpc.h"
+#include <stdio.h>
 
 
 CLIENT *mstr_clnt;
