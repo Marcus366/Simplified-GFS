@@ -1,4 +1,5 @@
 #include "gfs_rpc.h"
+#include <fcntl.h>
 
 
 static struct timeval TIMEOUT = { 25, 0 };
@@ -37,12 +38,33 @@ unreg_chk_1(char **argp, CLIENT *clnt)
 
 int*
 ask_chk_open_1_svc(open_args *args, struct svc_req *req) {
-	return NULL;
-	/* not implement */
+	static int fd;
+
+	printf("ask_chk_open_1_svc, path: %s\n", args->path);
+	fd = open(args->path, args->oflags, args->mode);
+
+	return &fd;
 }
 
 int*
 ask_chk_close_1_svc(close_args *args, struct svc_req *req) {
+	static int res;
+
+	printf("ask_chk_close_1_svc fd: %d\n", args->fd);
+	res = close(args->fd);
+
+	return &res;
+}
+
+
+int*
+ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
+	/* not implement */
 	return NULL;
-	/* not implement */	
+}
+
+int*
+ask_chk_read_1_svc(read_args *args, struct svc_req *req) {
+	/* not implement */
+	return NULL;
 }

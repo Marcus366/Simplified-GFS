@@ -81,10 +81,58 @@ mstr_chk_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 
 static void
+clnt_chk_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
+	union {
+		write_args ask_chk_write_1_arg;
+		read_args ask_chk_read_1_arg;
+	} argument;
+	char *result;
+	xdrproc_t _xdr_argument, _xdr_result;
+	char *(*local)(char *, struct svc_req *);
+
+	switch (rqstp->rq_proc) {
+	case NULLPROC:
+		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
+		return;
+
+	case ask_chk_write:
+		_xdr_argument = (xdrproc_t) xdr_write_args;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) ask_chk_write_1_svc;
+		break;
+
+	case ask_chk_read:
+		_xdr_argument = (xdrproc_t) xdr_read_args;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) ask_chk_read_1_svc;
+		break;
+
+	default:
+		svcerr_noproc (transp);
+		return;
+	}
+	memset ((char *)&argument, 0, sizeof (argument));
+	if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+		svcerr_decode (transp);
+		return;
+	}
+	result = (*local)((char *)&argument, rqstp);
+	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) _xdr_result, result)) {
+		svcerr_systemerr (transp);
+	}
+	if (!svc_freeargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+		fprintf (stderr, "%s", "unable to free arguments");
+		exit (1);
+	}
+	return;
+}
+
+static void
 init_svc() {
 	register SVCXPRT *transp;
 
 	pmap_unset (MSTR_CHK_PROG, VERSION);
+	pmap_unset (CLNT_CHK_PROG, VERSION);
 
 	transp = svcudp_create(RPC_ANYSOCK);
 	if (transp == NULL) {
@@ -95,6 +143,10 @@ init_svc() {
 		fprintf (stderr, "%s", "unable to register (MSTR_CHK_PROG, VERSION, udp).");
 		exit(1);
 	}
+	if (!svc_register(transp, CLNT_CHK_PROG, VERSION, clnt_chk_prog_1, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (CLNT_CHK_PROG, VERSION, udp).");
+		exit(1);
+	}
 
 	transp = svctcp_create(RPC_ANYSOCK, 0, 0);
 	if (transp == NULL) {
@@ -103,6 +155,10 @@ init_svc() {
 	}
 	if (!svc_register(transp, MSTR_CHK_PROG, VERSION, mstr_chk_prog_1, IPPROTO_TCP)) {
 		fprintf (stderr, "%s", "unable to register (MSTR_CHK_PROG, VERSION, tcp).");
+		exit(1);
+	}
+	if (!svc_register(transp, CLNT_CHK_PROG, VERSION, clnt_chk_prog_1, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (CLNT_CHK_PROG, VERSION, tcp).");
 		exit(1);
 	}
 	svc_run ();

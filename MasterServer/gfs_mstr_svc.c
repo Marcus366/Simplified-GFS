@@ -127,12 +127,14 @@ chk_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 
 gfs_list_t *chk_svcs;
+gfs_list_t *chk_clnts;
 gfs_node_t *filetree_root;
 
 
 static void
 init_chk_svcs() {
 	gfs_list_init(&chk_svcs);
+	gfs_list_init(&chk_clnts);
 }
 
 static void
@@ -147,8 +149,7 @@ init_fds() {
 
 
 int
-main (int argc, char **argv)
-{
+main (int argc, char **argv) {
 	register SVCXPRT *transp;
 
 	pmap_unset (CLNT_MSTR_PROG, VERSION);
@@ -211,7 +212,7 @@ int on_clnt_close(int fd) {
 
 
 ssize_t on_clnt_read(int fd, void *buf, size_t count) {
-
+	/* not impelement */
 	return 0;
 }
 
@@ -227,9 +228,20 @@ ssize_t on_clnt_write(int fd, const void *buf, size_t nbytes) {
 }
 
 int on_chk_reg(char *ip) {
+	CLIENT *cl;
+
+	printf("on_chk_reg, reg ip: %s\n", ip);
+	cl = clnt_create(ip, MSTR_CHK_PROG, VERSION, "tcp");
+	if (cl == NULL) {
+		fprintf(stderr, "on_chk_reg, reg ip(%s) failed\n", ip);
+		return -1;
+	}
+	gfs_list_push_back(chk_clnts, cl);
+
 	char *aip = malloc(sizeof(ip));
 	strcpy(aip,ip);
 	gfs_list_push_back(chk_svcs, aip);
+
 	return 0;
 }
 

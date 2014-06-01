@@ -29,9 +29,9 @@ void file_free(file_t **file) {
 }
 
 
-void file_create(const char *path, mode_t mode, int type, node_t *root) {
-	node_t *node;
-	node_t *father;
+void file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
+	gfs_node_t *node;
+	gfs_node_t *father;
 	file_t *file;
 	int count = 0,st = 0;
 	char temp[33];
@@ -42,7 +42,7 @@ void file_create(const char *path, mode_t mode, int type, node_t *root) {
 			strncpy(temp, path + st, count - st);
 			father = find_node_by_name(node, temp);
 			st = count + 1;
-		}™ 
+		}
 		count++;
 	}
 	strncpy(temp, path + st, count - st);
@@ -82,5 +82,3 @@ int get_fd(file_t* file){
     }
     return fd;
 }
-
-

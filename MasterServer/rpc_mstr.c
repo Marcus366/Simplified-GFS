@@ -37,24 +37,35 @@ ask_chk_close_1(close_args *argp, CLIENT *clnt)
 }
 
 
-#ifdef ask_chk_open
-#undef ask_chk_open
-#endif
-
-#ifdef ask_chk_close
-#undef ask_chk_close
-#endif
-
 int
-ask_chk_open(const char *name, int oflags, mode_t mode) {
-	return -1;
-	/* not implement */
+ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode) {
+	CLIENT *cl;
+	open_args args;
+	int res;
+
+	cl = (CLIENT*)(gfs_list_get(chk_clnts, chk)->elem);
+
+	args.path = (char*)malloc(strlen(name) + 1);
+	strcpy(args.path, name);
+	args.oflags = oflags;
+	args.mode = mode;
+
+	res = ask_chk_open_1(&args, cl);
+	free(args.path);
+
+	return res;
 }
 
 int
-ask_chk_close(int fd) {
-	return -1;
-	/* not implement */
+ask_chksvc_close(int chk, int fd) {
+	CLIENT *cl;
+	close_args args;
+
+	cl = (CLIENT*)(gfs_list_get(chk_clnts, chk)->elem);
+
+	args.fd = fd;
+
+	return ask_chk_close_1(&args, cl);
 }
 
 int*
