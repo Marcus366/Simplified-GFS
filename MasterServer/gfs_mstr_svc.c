@@ -142,7 +142,6 @@ init_filetree_root() {
 
 static void
 init_fds() {
-	memset(fds, sizeof(fds));
 	fd_count = 0;
 }
 
