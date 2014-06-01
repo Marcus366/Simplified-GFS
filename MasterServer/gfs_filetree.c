@@ -2,15 +2,13 @@
 #include <string.h>
 
 
-void gfs_create_node(gfs_node_t *father, file_t *file) { 
-	gfs_node_t *node;
-
-	node = (gfs_node_t*) malloc(sizeof(gfs_node_t));
-	node->file = file;
-	node->father = father;
-	linklist_init(&node->child);
+void gfs_create_node(gfs_node_t **node, gfs_node_t *father, file_t *file) { 
+	*node = (gfs_node_t*) malloc(sizeof(gfs_node_t));
+	(*node)->file = file;
+	(*node)->father = father;
+	linklist_init(&(*node)->child));
 	if( father != NULL)
-		linklist_push_back(father->child, (void*)node);
+		linklist_push_back(father->child, (void*)*node);
 }
 
 
@@ -104,6 +102,46 @@ file_t* get_file_by_path(gfs_node_t *root, const char *full_path) {
 	node = find_node_by_name(node, temp);
 
 	return node->file;
+}
+
+gfs_node_t* gfs_get_node_by_path(gfs_node_t *root, const char *full_path){
+	gfs_node_t* node = NULL;
+	int count,st;
+
+	node = root;
+	count = 0;
+	st = 0;
+	if(full_path[0] == '/') {
+		count++;
+		st++;
+	}
+	while(full_path[count] != '\0') {
+		if(full_path[count] == '/') {
+			char temp[33];
+			strncpy(temp, full_path + st, count - st);
+			node = find_node_by_name(node, temp);
+			st = count + 1;
+		}
+		count++;
+	}
+	char temp[33];
+	strncpy(temp, full_path + st, count - st);
+	node = find_node_by_name(node, temp);
+
+	return node;
+}
+
+void gfs_filetree_print(gfs_node_t *root){
+	printf("%s\n", root->file->name);
+	listnode_t *node;
+	node = gfs_list_findFirst(root->child);
+	while(node != NULL){
+		gfs_node_t * treenode;
+		treenode = node->elem;
+		printf("%s's child is%s\n", root->file->name, treenode->elem->name);
+		gfs_filetree_print(treenode);
+		node = node->next;
+	}
 }
 
 void free_node(gfs_node_t **node) {

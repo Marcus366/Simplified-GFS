@@ -1,7 +1,10 @@
 #include "file.h"
-#include "filetree.h"
+#include "gfs_filetree.h"
 #include <string.h>
 #include <stdlib.h>
+
+int fds[MAX_FILE_SIZE];			
+int fd_count;
 
 
 void file_new(file_t **file, char* name, int type) {
@@ -39,11 +42,60 @@ void file_create(const char *path, mode_t mode, int type, node_t *root) {
 			strncpy(temp, path + st, count - st);
 			father = find_node_by_name(node, temp);
 			st = count + 1;
-		}
+		}™ 
 		count++;
 	}
 	strncpy(temp, path + st, count - st);
 
 	file_new(&file, temp, type);
-	create_node(father, file);
+	gfs_create_node(father, file);
 }
+
+int binary_search_fds(int fd){
+	int st = 0, ed = fd_count - 1, mid;
+    while(st <= ed){			//binary search
+    	mid = (ed + st) / 2;
+    	if(fd == fds[mid]) return mid;
+    	else if(fd < fds[mid]) {
+    		ed = mid - 1;
+    	}
+    	else {
+    		st = mid + 1;
+    	}
+    }
+    return -1;
+}
+
+int get_fd(file_t* file){
+	unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+ 
+    char* str = file->name;
+
+    while (*str)
+    {
+        hash = hash * seed + (*str++);
+    }
+ 
+    int fd = (hash & 0x7FFFFFFF);
+  	int pos;
+  	pos = binary_search_fds(fd);
+    while( pos == -1){
+    	fd++;
+    	pos = binary_search_fds(fd);
+    }
+    int ipos = 0;
+    for(int a=0;a!=fd_count;++a){
+    	if(fds[a] > fd){
+    		ipos = a;
+    		break;
+    	}
+    }
+    fd_count++;
+    for(int a=ipos+1;a<=fd_count;++a){
+    	fds[a] = fds[a-1];
+    }
+    fds[ipos] = fd;
+}
+
+

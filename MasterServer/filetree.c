@@ -16,6 +16,8 @@ void create_node(node_t *father, file_t *file) {
 }
 
 
+
+
 void delete_node(node_t **node) {
 	node_t *father;
 
