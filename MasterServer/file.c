@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int fds[MAX_FILE_SIZE];			
+file_t *fds[MAX_FILE_SIZE];			
 int fd_count;
 
 
@@ -77,25 +77,10 @@ int get_fd(file_t* file){
  
     int fd = (hash & 0x7FFFFFFF);
 
-  	int pos;
-  	pos = binary_search_fds(fd);
-    while( pos == -1) {
-    	fd++;
-    	pos = binary_search_fds(fd);
+  	while(fds[fd] != NULL){
+        fd++;
     }
-
-    int ipos = 0;
-    for(int a=0;a!=fd_count;++a) {
-    	if(fds[a] > fd){
-    		ipos = a;
-    		break;
-    	}
-    }
-    fd_count++;
-    for(int a=ipos+1;a<=fd_count;++a) {
-    	fds[a] = fds[a-1];
-    }
-    fds[ipos] = fd;
+    return fd;
 }
 
 

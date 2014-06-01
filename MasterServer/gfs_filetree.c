@@ -27,7 +27,7 @@ void gfs_delete_node(gfs_node_t **node) {
 }
 
 
-gfs_node_t* find_node(gfs_node_t *root, file_t *file) {
+gfs_node_t* gfs_find_node(gfs_node_t *root, file_t *file) {
 	listnode_t *listnode;
 
 	listnode = linklist_findFirst((*node)->child);
@@ -52,7 +52,7 @@ gfs_node_t* find_node(gfs_node_t *root, file_t *file) {
 }
 
 
-gfs_node_t* find_node_by_name(gfs_node_t *root, char *name) {
+gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name) {
 	listnode_t *listnode;
 
 	listnode = linklist_findFirst((*node)->child);
@@ -77,7 +77,7 @@ gfs_node_t* find_node_by_name(gfs_node_t *root, char *name) {
 }
 
 
-file_t* get_file_by_path(gfs_node_t *root, const char *full_path) {
+file_t* gfs_get_file_by_path(gfs_node_t *root, const char *full_path) {
 	gfs_node_t* node = NULL;
 	int count,st;
 
@@ -144,7 +144,7 @@ void gfs_filetree_print(gfs_node_t *root){
 	}
 }
 
-void free_node(gfs_node_t **node) {
+void gfs_free_node(gfs_node_t **node) {
 	file_free(&((*node)->file));
 	linklist_free(&((*node)->child));
 	(*node)->father = NULL;
