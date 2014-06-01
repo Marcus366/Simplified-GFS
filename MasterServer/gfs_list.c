@@ -36,6 +36,22 @@ listnode_t *gfs_list_find(gfs_list_t *list, void* elem) {
 }
 
 
+listnode_t* gfs_list_get(gfs_list_t *list, int pos) {
+	listnode_t *cur;
+
+	if (pos < 0 || pos > list->size) {
+		cur = NULL;
+	}	else {
+		cur = list->head;
+		while (pos--) {
+			cur = cur->next;
+		}
+	}
+
+	return NULL;
+}
+
+
 listnode_t *gfs_list_findFirst(gfs_list_t *list) {
 	return list->head->next;
 }
