@@ -134,8 +134,7 @@ init_chk_svcs() {
 
 
 int
-main (int argc, char **argv)
-{
+main (int argc, char **argv) {
 	register SVCXPRT *transp;
 
 	pmap_unset (CLNT_MSTR_PROG, VERSION);

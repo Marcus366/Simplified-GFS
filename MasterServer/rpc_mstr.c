@@ -46,13 +46,13 @@ ask_chk_close_1(close_args *argp, CLIENT *clnt)
 #endif
 
 int
-ask_chk_open(const char *name, int oflags, mode_t mode) {
+ask_chk_open(int chk, const char *name, int oflags, mode_t mode) {
 	return -1;
 	/* not implement */
 }
 
 int
-ask_chk_close(int fd) {
+ask_chk_close(int chk, int fd) {
 	return -1;
 	/* not implement */
 }
