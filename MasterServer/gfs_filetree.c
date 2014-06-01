@@ -1,14 +1,15 @@
 #include "gfs_filetree.h"
 #include <string.h>
-
+#include "file.h"
+#include "gfs_list.h"
 
 void gfs_create_node(gfs_node_t **node, gfs_node_t *father, file_t *file) { 
 	*node = (gfs_node_t*) malloc(sizeof(gfs_node_t));
 	(*node)->file = file;
 	(*node)->father = father;
-	linklist_init(&(*node)->child));
+	gfs_list_init(&((*node)->child));
 	if( father != NULL)
-		linklist_push_back(father->child, (void*)*node);
+		gfs_list_push_back(father->child, (void*)*node);
 }
 
 
@@ -16,13 +17,13 @@ void gfs_delete_node(gfs_node_t **node) {
 	gfs_node_t *father;
 
 	while((*node)->child->size != 0){
-		listnode_t *listnode = linklist_findFirst((*node)->child);
+		listnode_t *listnode = gfs_list_findFirst((*node)->child);
 		gfs_node_t *tnode = (gfs_node_t*) listnode->elem;
-		delete_Node(&tnode);
+		gfs_delete_node(&tnode);
 	}
 	father = (*node)->father;
-	linklist_delete(father->child, *node);
-	free_Node(node);
+	gfs_list_delete(father->child, *node);
+	gfs_free_node(node);
 	node = NULL;
 }
 
@@ -30,7 +31,7 @@ void gfs_delete_node(gfs_node_t **node) {
 gfs_node_t* gfs_find_node(gfs_node_t *root, file_t *file) {
 	listnode_t *listnode;
 
-	listnode = linklist_findFirst((*node)->child);
+	listnode = gfs_list_findFirst(root->child);
 
 	while( listnode != NULL) {
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
@@ -40,11 +41,11 @@ gfs_node_t* gfs_find_node(gfs_node_t *root, file_t *file) {
 		listnode = listnode->next;
 	}
 	
-	listnode = linklist_findFirst((*node)->child);
+	listnode = gfs_list_findFirst(root->child);
 	
 	while( listnode != NULL) {
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
-		gfs_node_t* result = find_node(tnode, file);
+		gfs_node_t* result = gfs_find_node(tnode, file);
 		if(result != NULL)return result;
 		listnode = listnode->next;
 	}
@@ -55,7 +56,7 @@ gfs_node_t* gfs_find_node(gfs_node_t *root, file_t *file) {
 gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name) {
 	listnode_t *listnode;
 
-	listnode = linklist_findFirst((*node)->child);
+	listnode = gfs_list_findFirst(root->child);
 
 	while( listnode != NULL) {
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
@@ -65,14 +66,20 @@ gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name) {
 		listnode = listnode->next;
 	}
 	
-	listnode = linklist_findFirst((*node)->child);
-	
+	listnode = gfs_list_findFirst(root->child);
+	file_t* file;
+	file_new(&file, name, FILE_TYPE_FILE);
+
 	while( listnode != NULL) {
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
-		gfs_node_t* result = find_node(tnode, file);
-		if(result != NULL)return result;
+		gfs_node_t* result = gfs_find_node(tnode, file);
+		if(result != NULL){
+			file_free(&file);
+			return result;
+		}
 		listnode = listnode->next;
 	}
+	file_free(&file);
 	return NULL;
 }
 
@@ -92,14 +99,14 @@ file_t* gfs_get_file_by_path(gfs_node_t *root, const char *full_path) {
 		if(full_path[count] == '/') {
 			char temp[33];
 			strncpy(temp, full_path + st, count - st);
-			node = find_node_by_name(node, temp);
+			node = gfs_find_node_by_name(node, temp);
 			st = count + 1;
 		}
 		count++;
 	}
 	char temp[33];
 	strncpy(temp, full_path + st, count - st);
-	node = find_node_by_name(node, temp);
+	node = gfs_find_node_by_name(node, temp);
 
 	return node->file;
 }
@@ -119,14 +126,14 @@ gfs_node_t* gfs_get_node_by_path(gfs_node_t *root, const char *full_path){
 		if(full_path[count] == '/') {
 			char temp[33];
 			strncpy(temp, full_path + st, count - st);
-			node = find_node_by_name(node, temp);
+			node = gfs_find_node_by_name(node, temp);
 			st = count + 1;
 		}
 		count++;
 	}
 	char temp[33];
 	strncpy(temp, full_path + st, count - st);
-	node = find_node_by_name(node, temp);
+	node = gfs_find_node_by_name(node, temp);
 
 	return node;
 }
@@ -138,7 +145,7 @@ void gfs_filetree_print(gfs_node_t *root){
 	while(node != NULL){
 		gfs_node_t * treenode;
 		treenode = node->elem;
-		printf("%s's child is%s\n", root->file->name, treenode->elem->name);
+		printf("%s's child is%s\n", root->file->name, treenode->file->name);
 		gfs_filetree_print(treenode);
 		node = node->next;
 	}
@@ -146,7 +153,7 @@ void gfs_filetree_print(gfs_node_t *root){
 
 void gfs_free_node(gfs_node_t **node) {
 	file_free(&((*node)->file));
-	linklist_free(&((*node)->child));
+	gfs_list_free(&((*node)->child));
 	(*node)->father = NULL;
 	free(*node);
 	node = NULL;

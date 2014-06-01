@@ -40,15 +40,16 @@ void file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	while(path[count] != '\0') {
 		if(path[count] == '/') {
 			strncpy(temp, path + st, count - st);
-			father = find_node_by_name(node, temp);
+			father = gfs_find_node_by_name(node, temp);
 			st = count + 1;
 		}
 		count++;
 	}
 	strncpy(temp, path + st, count - st);
 
+	gfs_node_t *newnode;
 	file_new(&file, temp, type);
-	gfs_create_node(father, file);
+	gfs_create_node(&newnode, father, file);
 }
 
 int binary_search_fds(int fd){
