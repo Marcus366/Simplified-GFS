@@ -68,31 +68,31 @@ int binary_search_fds(int fd){
 
 int get_fd(file_t* file){
 	unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
-    unsigned int hash = 0;
- 
+    unsigned int hash = 0; 
     char* str = file->name;
 
-    while (*str)
-    {
+    while (*str) {
         hash = hash * seed + (*str++);
     }
  
     int fd = (hash & 0x7FFFFFFF);
+
   	int pos;
   	pos = binary_search_fds(fd);
-    while( pos == -1){
+    while( pos == -1) {
     	fd++;
     	pos = binary_search_fds(fd);
     }
+
     int ipos = 0;
-    for(int a=0;a!=fd_count;++a){
+    for(int a=0;a!=fd_count;++a) {
     	if(fds[a] > fd){
     		ipos = a;
     		break;
     	}
     }
     fd_count++;
-    for(int a=ipos+1;a<=fd_count;++a){
+    for(int a=ipos+1;a<=fd_count;++a) {
     	fds[a] = fds[a-1];
     }
     fds[ipos] = fd;
