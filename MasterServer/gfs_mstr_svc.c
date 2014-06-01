@@ -1,5 +1,7 @@
 #include "gfs_rpc.h"
 #include "gfs_list.h"
+#include "gfs_filetree.h"
+#include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -125,11 +127,23 @@ chk_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 
 gfs_list_t *chk_svcs;
+gfs_node_t *filetree_root;
 
 
 static void
 init_chk_svcs() {
 	gfs_list_init(&chk_svcs);
+}
+
+static void
+init_filetree_root() {
+	gfs_create_node(&filetree_root, NULL, NULL);
+}
+
+static void
+init_fds() {
+	memset(fds, sizeof(fds));
+	fd_count = 0;
 }
 
 
@@ -170,6 +184,8 @@ main (int argc, char **argv)
 	}
 
 	init_chk_svcs();
+	init_filetree_root();
+	init_fds();
 
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
@@ -180,8 +196,12 @@ main (int argc, char **argv)
 
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	printf("path: %s\n", path);
+	file_t *file;
+	file = gfs_get_file_by_path(filetree_root, path);
+	int fd = get_fd(file);
+	file_create(path, mode, FILE_TYPE_FILE, filetree_root);
 	/* not implement */
-	return 0;
+	return fd;
 }
 
 
@@ -208,10 +228,15 @@ ssize_t on_clnt_write(int fd, const void *buf, size_t nbytes) {
 }
 
 int on_chk_reg(char *ip) {
-
+	char *aip = malloc(sizeof(ip));
+	strcpy(aip,ip);
+	gfs_list_push_back(chk_svcs, aip);
 	return 0;
 }
 
 int on_chk_unreg(char *ip) {
+	char *aip = malloc(sizeof(ip));
+	strcpy(aip,ip);
+	gfs_list_delete(chk_svcs, aip);
 	return 0;
 }
