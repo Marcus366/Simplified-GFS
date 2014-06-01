@@ -7,6 +7,7 @@
 extern struct file_s;
 typedef struct file_s file_t;
 
+
 typedef struct gfs_node_s gfs_node_t;
 struct gfs_node_s {
 	file_t		*file;
@@ -14,7 +15,8 @@ struct gfs_node_s {
 	gfs_list_t	*child;	/* data */
 };
 
-extern void gfs_create_node(gfs_node_t **node, gfs_node_t *father, file_t *file);
+
+extern void gfs_create_node(gfs_node_t **node, gfs_node_t *father,file_t *file);
 extern void gfs_delete_node(gfs_node_t **node);
 extern gfs_node_t* gfs_find_node(gfs_node_t *root, file_t *file);
 extern gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name);

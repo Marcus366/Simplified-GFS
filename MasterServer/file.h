@@ -16,7 +16,7 @@ typedef struct file_s {
 } file_t;
 
 
-extern int fds[MAX_FILE_SIZE];			
+extern file_t *fds[MAX_FILE_SIZE];			
 extern int fd_count;
 
 extern void file_new(file_t **file, char* name, int type);

@@ -1,6 +1,8 @@
 #ifndef __GFS_CHUNK_H__
 #define __GFS_CHUNK_H__
 
+#include <stdint.h>
+
 
 typedef struct gfs_chk_s {
 	uint64_t uuid;				/* the unique id of chunk    			*/

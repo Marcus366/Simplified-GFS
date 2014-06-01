@@ -9,6 +9,7 @@
 
 #include <fcntl.h>
 #include <stddef.h>
+#include <sys/types.h>
 
 
 extern int gfs_open(const char *path, int oflags, mode_t mode);
