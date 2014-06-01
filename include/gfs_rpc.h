@@ -118,6 +118,28 @@ extern  int * unreg_chk_1_svc();
 extern int chk_mstr_prog_1_freeresult ();
 #endif /* K&R C */
 
+#define CLNT_CHK_PROG 0x31230003
+#define VERSION 1
+
+#if defined(__STDC__) || defined(__cplusplus)
+#define ask_chk_write 1
+extern  int * ask_chk_write_1(write_args *, CLIENT *);
+extern  int * ask_chk_write_1_svc(write_args *, struct svc_req *);
+#define ask_chk_read 2
+extern  int * ask_chk_read_1(read_args *, CLIENT *);
+extern  int * ask_chk_read_1_svc(read_args *, struct svc_req *);
+extern int clnt_chk_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+
+#else /* K&R C */
+#define ask_chk_write 1
+extern  int * ask_chk_write_1();
+extern  int * ask_chk_write_1_svc();
+#define ask_chk_read 2
+extern  int * ask_chk_read_1();
+extern  int * ask_chk_read_1_svc();
+extern int clnt_chk_prog_1_freeresult ();
+#endif /* K&R C */
+
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)

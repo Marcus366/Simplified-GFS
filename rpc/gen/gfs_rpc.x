@@ -45,7 +45,7 @@ program CHK_MSTR_PROG {
 
 program CLNT_CHK_PROG {
 	version VERSION {
-		int ask_chk_write(wirte_args)	= 1;
+		int ask_chk_write(write_args)	= 1;
 		int ask_chk_read(read_args)		= 2;
 	} = 1;
 } = 0x31230003;
