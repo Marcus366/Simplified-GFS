@@ -1,7 +1,9 @@
 #include "gfs_filetree.h"
-#include <string.h>
 #include "file.h"
 #include "gfs_list.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void gfs_create_node(gfs_node_t **node, gfs_node_t *father, file_t *file) { 
 	*node = (gfs_node_t*) malloc(sizeof(gfs_node_t));

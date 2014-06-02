@@ -18,4 +18,3 @@ rpc_clnt.o: rpc_clnt.c ../rpc/gfs_rpc.h
 
 clean:
 	rm client
-	find -name "*.o" |xargs rm

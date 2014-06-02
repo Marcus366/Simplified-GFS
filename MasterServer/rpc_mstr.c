@@ -41,7 +41,7 @@ int
 ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode) {
 	CLIENT *cl;
 	open_args args;
-	int res;
+	int *res;
 
 	cl = (CLIENT*)(gfs_list_get(chk_clnts, chk)->elem);
 
@@ -53,7 +53,7 @@ ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode) {
 	res = ask_chk_open_1(&args, cl);
 	free(args.path);
 
-	return res;
+	return *res;
 }
 
 int
@@ -65,7 +65,7 @@ ask_chksvc_close(int chk, int fd) {
 
 	args.fd = fd;
 
-	return ask_chk_close_1(&args, cl);
+	return *ask_chk_close_1(&args, cl);
 }
 
 int*
