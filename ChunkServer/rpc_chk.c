@@ -6,9 +6,8 @@
 static struct timeval TIMEOUT = { 25, 0 };
 
 
-int *
-reg_chk_1(char **argp, CLIENT *clnt)
-{
+int*
+reg_chk_1(char **argp, CLIENT *clnt) {
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
@@ -22,9 +21,8 @@ reg_chk_1(char **argp, CLIENT *clnt)
 }
 
 
-int *
-unreg_chk_1(char **argp, CLIENT *clnt)
-{
+int*
+unreg_chk_1(char **argp, CLIENT *clnt) {
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
@@ -37,6 +35,7 @@ unreg_chk_1(char **argp, CLIENT *clnt)
 	return (&clnt_res);
 }
 
+
 int*
 ask_chk_open_1_svc(open_args *args, struct svc_req *req) {
 	static int fd;
@@ -46,6 +45,7 @@ ask_chk_open_1_svc(open_args *args, struct svc_req *req) {
 
 	return &fd;
 }
+
 
 int*
 ask_chk_close_1_svc(close_args *args, struct svc_req *req) {
@@ -60,12 +60,21 @@ ask_chk_close_1_svc(close_args *args, struct svc_req *req) {
 
 int*
 ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
-	/* not implement */
-	return NULL;
+	static int res;
+
+	printf("ask_chk_write_svc: %s\n", args->buf);
+	res = write(args->fd, args->buf, args->nbytes);
+
+	return &res;
 }
+
 
 int*
 ask_chk_read_1_svc(read_args *args, struct svc_req *req) {
+	static int res;
+
 	/* not implement */
-	return NULL;
+	//res = read(args->fd, args->buf, args->count);
+	
+	return &res;
 }

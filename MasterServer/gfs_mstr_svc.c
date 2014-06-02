@@ -195,18 +195,18 @@ main (int argc, char **argv) {
 
 
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
-	printf("path: %s\n", path);
 	file_t *file;
-	file = gfs_get_file_by_path(filetree_root, path);
-	int fd = get_fd(file);
-	file_create(path, mode, FILE_TYPE_FILE, filetree_root);
+	//file = gfs_get_file_by_path(filetree_root, path);
+	int fd = 100;//get_fd(file);
+	//file_create(path, mode, FILE_TYPE_FILE, filetree_root);
+	printf("path: %s\n", path);
 	/* not implement */
 	return fd;
 }
 
 
 int on_clnt_close(int fd) {
-	/* not implement */
+	printf("close fd: %d\n", fd);
 	return 0;
 }
 

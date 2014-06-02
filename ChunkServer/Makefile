@@ -7,7 +7,7 @@ OBJS =gfs_chk_svc.o rpc_chk.o ../rpc/gfs_rpc_xdr.o
 	$(CC) $(CFLAGS) -c $<
 
 chk: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
+	$(CC) $(CFLAGS) $(OBJS) -o $@ -lpthread
 
 .PHONY: clean
 

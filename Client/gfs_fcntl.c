@@ -19,10 +19,10 @@ int gfs_open(const char *path, int oflags, mode_t mode) {
 	free(arg.path);
 
 	if (pfd == NULL) {
-		fprintf(stderr, "fd NULL error");
+		fprintf(stderr, "fd NULL error\n");
 		return -1;
 	}
-	printf("result: %d\n", *pfd);
+	printf("open file of fd(%d)\n", *pfd);
 
 	return (*pfd);
 }

@@ -12,6 +12,8 @@
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
@@ -20,15 +22,32 @@
 
 CLIENT *cl;
 
-static int
-init_clnt(char **argv) {
+
+static void*
+pthread_init_clnt(void *arg) {
+	char **argv = (char**)arg;
+	sleep(1);
+	printf("pthread_init_clnt: %s\n", argv[2]);
 	if ((cl = clnt_create(argv[2], CHK_MSTR_PROG, VERSION, "tcp")) == NULL) {
 		fprintf(stderr, "create clnt error\n");
-		return -1;
+		exit(-1);
 	}
 
 	reg_chk_1(&argv[1], cl);
-	return 0;
+
+	return NULL;
+}
+
+static void
+init_clnt(char **argv) {
+	static pthread_t t;
+	int res;
+
+	res = pthread_create(&t, NULL, pthread_init_clnt, (void*)argv);
+	if (res != 0) {
+		fprintf(stderr, "create thread error\n");
+		exit(-1);
+	}
 }
 
 
@@ -174,10 +193,7 @@ main(int argc, char **argv) {
 		return -1;
 	}
 
-	if (init_clnt(argv) == -1) {
-		fprintf(stderr, "init clnt error\n");
-		return -1;
-	}
+	init_clnt(argv);
 
 	init_svc();
 	/* NEVER RETURN */

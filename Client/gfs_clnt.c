@@ -12,10 +12,11 @@ static int init_clnt(const char*);
 
 int
 main(int argc, char **argv) {
-	int fd;
+	int fd, res;
+	char c, buf[256];
 
-	if (argc != 3) {
-		fprintf(stderr, "usage: %s <IP> <FILE PATH>", argv[0]);
+	if (argc != 2) {
+		fprintf(stderr, "usage: %s <IP>\n", argv[0]);
 		exit(-1);
 	}
 
@@ -24,15 +25,26 @@ main(int argc, char **argv) {
 		return -1;
 	}
 	
-	fd = gfs_open(argv[2], O_CREAT | O_RDWR, 0);
-	printf("open the file of fd: %d\n", fd);
-
-	char buf[256];
-	while (gets(buf)) {
-		printf("write %d char: %s\n", strlen(buf), buf);
-		gfs_write(1, buf, strlen(buf) + 1);
+	while (c = getchar()) {
+		if (c == '\n') continue;
+		switch(c) {
+			case 'o':
+				scanf("%s", buf);
+				fd = gfs_open(buf, O_CREAT | O_RDWR, 0);
+				printf("open the file of fd: %d\n", fd);break;
+			case 'c':
+				scanf("%d", &fd);
+				res = gfs_close(fd);
+				break;
+			case 'w':
+				scanf("%s", buf);
+				res = gfs_write(fd, buf, strlen(buf) + 1);
+				printf("write fd(%d): %s\n", fd, buf);
+				break;
+			default:
+				printf("error input\n");
+		}
 	}
-
 	return (0);
 }
 
