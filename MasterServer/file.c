@@ -47,9 +47,8 @@ void file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	}
 	strncpy(temp, path + st, count - st);
 
-	gfs_node_t *newnode;
 	file_new(&file, temp, type);
-	gfs_create_node(&newnode, father, file);
+	gfs_create_node(&node, father, file);
 }
 
 int binary_search_fds(int fd){
