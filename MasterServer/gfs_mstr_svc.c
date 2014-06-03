@@ -1,6 +1,8 @@
 #include "gfs_rpc.h"
 #include "gfs_list.h"
 #include "gfs_filetree.h"
+#include "gfs_chk.h"
+#include "rpc_mstr.h"
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -147,6 +149,10 @@ init_filetree_root() {
 static void
 init_fds() {
 	fd_count = 0;
+	int i;
+	for(i = 0;i<MAX_FILE_SIZE;++i) {
+		fds[i] = NULL;
+	}
 }
 
 
@@ -199,12 +205,21 @@ main (int argc, char **argv) {
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	file_t *file;
 	file = gfs_get_file_by_path(filetree_root, path);
-	if(file == NULL) {
+	if(file == NULL && oflags & O_CREAT) {
 		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
+		gfs_chk_t *chk;
+		gfs_chk_new(&chk);
+		gfs_list_push_back(file->chunks, (void*)chk);
 	}
-	int fd = 100;//get_fd(file);
+	int fd = get_fd(file);
+	if(fd == -1) return -1;
 	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
+	gfs_chk_t *chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	char name[64];
+	sprintf(name,"%llu",chk->uuid);
+	printf("uuid:%s\n", name);
+	//ask_chksvc_open(0, name, oflags, mode);
 	/* not implement */
 	return fd;
 }
