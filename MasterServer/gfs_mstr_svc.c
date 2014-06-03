@@ -249,8 +249,7 @@ int on_chk_reg(char *ip) {
 }
 
 int on_chk_unreg(char *ip) {
-	char *aip = malloc(sizeof(ip));
-	strcpy(aip,ip);
-	gfs_list_delete(chk_svcs, aip);
+	/* not implement */
+
 	return 0;
 }

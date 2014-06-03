@@ -10,6 +10,7 @@ typedef struct gfs_chk_s {
 	int	 chk_fd; 			/* chunk server fd if opened,  -1 otherwise	*/
 } gfs_chk_t;
 
+
 extern void gfs_chk_new(gfs_chk_t **chk);
 extern void gfs_chk_free(gfs_chk_t **chk);
 

@@ -71,10 +71,13 @@ ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
 
 read_res*
 ask_chk_read_1_svc(read_args *args, struct svc_req *req) {
-	static read_res res;
+	static read_res res = {0, NULL};
 
-	/* not implement */
-	//res = read(args->fd, args->buf, args->count);
+	if (res.buf != NULL) {
+		free(res.buf);
+	}
+	res.buf = (char*)malloc(args->count);
+	res.ssize = read(args->fd, res.buf, args->count);
 	
 	return &res;
 }

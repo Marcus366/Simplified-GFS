@@ -117,7 +117,7 @@ void gfs_list_free(gfs_list_t **list) {
 	free(*list);
 	*list = NULL;
 }
-
+/*
 void gfs_list_print(gfs_list_t *list) {
 	listnode_t *listnode = list->head->next;
 	while (listnode != NULL) {
@@ -125,3 +125,4 @@ void gfs_list_print(gfs_list_t *list) {
 		listnode = listnode->next;
 	}
 }
+*/

@@ -8,7 +8,7 @@ file_t *fds[MAX_FILE_SIZE];
 int fd_count;
 
 
-void file_new(file_t **file, char* name, int type) {
+void file_new(file_t **file, const char* name, int type) {
 	*file = (file_t*)malloc(sizeof(file_t));
 	(*file)->type = type;
 	gfs_list_init(&((*file)->chunks));
@@ -53,6 +53,8 @@ file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	return file;
 }
 
+
+/*
 int binary_search_fds(int fd){
 	int st = 0, ed = fd_count - 1, mid;
     while(st <= ed){			//binary search
@@ -67,20 +69,22 @@ int binary_search_fds(int fd){
     }
     return -1;
 }
+*/
+
 
 int get_fd(file_t* file){
 	unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
-    unsigned int hash = 0; 
-    char* str = file->name;
+ 	unsigned int hash = 0; 
+	char* str = file->name;
 
-    while (*str) {
-        hash = hash * seed + (*str++);
-    }
- 
-    int fd = (hash & 0x7FFFFFFF);
+	while (*str) {
+		hash = hash * seed + (*str++);
+	}
 
-  	while(fds[fd] != NULL){
-        fd++;
-    }
-    return fd;
+	int fd = (hash & 0x7FFFFFFF);
+
+	while(fds[fd] != NULL){
+		fd++;
+	}
+	return fd;
 }

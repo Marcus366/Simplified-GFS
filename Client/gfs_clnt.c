@@ -12,7 +12,7 @@ static int init_clnt(const char*);
 
 int
 main(int argc, char **argv) {
-	int fd, res;
+	int fd;
 	char c, buf[256];
 
 	if (argc != 2) {
@@ -25,7 +25,7 @@ main(int argc, char **argv) {
 		return -1;
 	}
 	
-	while (c = getchar()) {
+	while ((c = getchar())) {
 		if (c == '\n') continue;
 		switch(c) {
 			case 'o':
@@ -34,11 +34,11 @@ main(int argc, char **argv) {
 				printf("open the file of fd: %d\n", fd);break;
 			case 'c':
 				scanf("%d", &fd);
-				res = gfs_close(fd);
+				gfs_close(fd);
 				break;
 			case 'w':
 				scanf("%s", buf);
-				res = gfs_write(fd, buf, strlen(buf) + 1);
+				gfs_write(fd, buf, strlen(buf) + 1);
 				printf("write fd(%d): %s\n", fd, buf);
 				break;
 			default:
