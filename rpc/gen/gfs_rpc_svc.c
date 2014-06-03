@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "rpc/gen/gfs_rpc.h"
+#include "gfs_rpc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -48,13 +48,13 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 	case ask_mstr_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_read_1_svc;
 		break;
 
 	case ask_mstr_write:
 		_xdr_argument = (xdrproc_t) xdr_write_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_write_1_svc;
 		break;
 
@@ -198,7 +198,7 @@ clnt_chk_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 	case ask_chk_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_read_res;
 		local = (char *(*)(char *, struct svc_req *)) ask_chk_read_1_svc;
 		break;
 

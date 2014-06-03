@@ -69,9 +69,9 @@ ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
 }
 
 
-int*
+read_res*
 ask_chk_read_1_svc(read_args *args, struct svc_req *req) {
-	static int res;
+	static read_res res;
 
 	/* not implement */
 	//res = read(args->fd, args->buf, args->count);

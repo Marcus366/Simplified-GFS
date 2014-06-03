@@ -88,23 +88,23 @@ ask_mstr_close_1_svc(close_args *args, struct svc_req *req) {
 }
 
 
-int*
+chk_info*
 ask_mstr_read_1_svc(read_args *args, struct svc_req *req) {
-	static int res;
+	static chk_info info;
 
-	res = on_clnt_read(args->fd, args->buf, args->count);
+	info = on_clnt_read(args->fd);
 
-	return &res;
+	return &info;
 }
 
 
-int*
+chk_info*
 ask_mstr_write_1_svc(write_args *args, struct svc_req *req) {
-	static int res;
+	static chk_info info;
 
-	res = on_clnt_write(args->fd, args->buf, args->nbytes);
+	info = on_clnt_write(args->fd);
 
-	return &res;
+	return &info;
 }
 
 

@@ -216,20 +216,18 @@ int on_clnt_close(int fd) {
 }
 
 
-ssize_t on_clnt_read(int fd, void *buf, size_t count) {
+chk_info on_clnt_read(int fd) {
+	chk_info info = {NULL, NULL, 0};
 	/* not impelement */
-	return 0;
+	return info;
 }
 
 
-ssize_t on_clnt_write(int fd, const void *buf, size_t nbytes) {
+chk_info on_clnt_write(int fd) {
 	/* not implement */
-	char *pbuf;
-	pbuf = (char*)malloc(nbytes + 1);
-	memcpy(pbuf, buf, nbytes);
-	pbuf[nbytes] = 0;
-	printf("%s\n", pbuf);
-	return nbytes;
+	chk_info info = {NULL, NULL, 0};
+
+	return info;
 }
 
 int on_chk_reg(char *ip) {
@@ -243,9 +241,9 @@ int on_chk_reg(char *ip) {
 	}
 	gfs_list_push_back(chk_clnts, cl);
 
-	char *aip = malloc(sizeof(ip));
-	strcpy(aip,ip);
-	gfs_list_push_back(chk_svcs, aip);
+	char *chksvc_ip = (char*)malloc(strlen(ip) + 1);
+	strcpy(chksvc_ip, ip);
+	gfs_list_push_back(chk_svcs, chksvc_ip);
 
 	return 0;
 }

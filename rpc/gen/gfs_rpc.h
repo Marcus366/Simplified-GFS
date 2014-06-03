@@ -28,10 +28,15 @@ typedef struct close_args close_args;
 
 struct read_args {
 	int fd;
-	char *buf;
 	u_int count;
 };
 typedef struct read_args read_args;
+
+struct read_res {
+	int ssize;
+	char *buf;
+};
+typedef struct read_res read_res;
 
 struct write_args {
 	int fd;
@@ -39,6 +44,13 @@ struct write_args {
 	u_int nbytes;
 };
 typedef struct write_args write_args;
+
+struct chk_info {
+	char *name;
+	char *ip;
+	int fd;
+};
+typedef struct chk_info chk_info;
 
 #define CLNT_MSTR_PROG 0x31230000
 #define VERSION 1
@@ -51,11 +63,11 @@ extern  int * ask_mstr_open_1_svc(open_args *, struct svc_req *);
 extern  int * ask_mstr_close_1(close_args *, CLIENT *);
 extern  int * ask_mstr_close_1_svc(close_args *, struct svc_req *);
 #define ask_mstr_read 3
-extern  int * ask_mstr_read_1(read_args *, CLIENT *);
-extern  int * ask_mstr_read_1_svc(read_args *, struct svc_req *);
+extern  chk_info * ask_mstr_read_1(read_args *, CLIENT *);
+extern  chk_info * ask_mstr_read_1_svc(read_args *, struct svc_req *);
 #define ask_mstr_write 4
-extern  int * ask_mstr_write_1(write_args *, CLIENT *);
-extern  int * ask_mstr_write_1_svc(write_args *, struct svc_req *);
+extern  chk_info * ask_mstr_write_1(write_args *, CLIENT *);
+extern  chk_info * ask_mstr_write_1_svc(write_args *, struct svc_req *);
 extern int clnt_mstr_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -66,11 +78,11 @@ extern  int * ask_mstr_open_1_svc();
 extern  int * ask_mstr_close_1();
 extern  int * ask_mstr_close_1_svc();
 #define ask_mstr_read 3
-extern  int * ask_mstr_read_1();
-extern  int * ask_mstr_read_1_svc();
+extern  chk_info * ask_mstr_read_1();
+extern  chk_info * ask_mstr_read_1_svc();
 #define ask_mstr_write 4
-extern  int * ask_mstr_write_1();
-extern  int * ask_mstr_write_1_svc();
+extern  chk_info * ask_mstr_write_1();
+extern  chk_info * ask_mstr_write_1_svc();
 extern int clnt_mstr_prog_1_freeresult ();
 #endif /* K&R C */
 
@@ -126,8 +138,8 @@ extern int chk_mstr_prog_1_freeresult ();
 extern  int * ask_chk_write_1(write_args *, CLIENT *);
 extern  int * ask_chk_write_1_svc(write_args *, struct svc_req *);
 #define ask_chk_read 2
-extern  int * ask_chk_read_1(read_args *, CLIENT *);
-extern  int * ask_chk_read_1_svc(read_args *, struct svc_req *);
+extern  read_res * ask_chk_read_1(read_args *, CLIENT *);
+extern  read_res * ask_chk_read_1_svc(read_args *, struct svc_req *);
 extern int clnt_chk_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -135,8 +147,8 @@ extern int clnt_chk_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 extern  int * ask_chk_write_1();
 extern  int * ask_chk_write_1_svc();
 #define ask_chk_read 2
-extern  int * ask_chk_read_1();
-extern  int * ask_chk_read_1_svc();
+extern  read_res * ask_chk_read_1();
+extern  read_res * ask_chk_read_1_svc();
 extern int clnt_chk_prog_1_freeresult ();
 #endif /* K&R C */
 
@@ -146,13 +158,17 @@ extern int clnt_chk_prog_1_freeresult ();
 extern  bool_t xdr_open_args (XDR *, open_args*);
 extern  bool_t xdr_close_args (XDR *, close_args*);
 extern  bool_t xdr_read_args (XDR *, read_args*);
+extern  bool_t xdr_read_res (XDR *, read_res*);
 extern  bool_t xdr_write_args (XDR *, write_args*);
+extern  bool_t xdr_chk_info (XDR *, chk_info*);
 
 #else /* K&R C */
 extern bool_t xdr_open_args ();
 extern bool_t xdr_close_args ();
 extern bool_t xdr_read_args ();
+extern bool_t xdr_read_res ();
 extern bool_t xdr_write_args ();
+extern bool_t xdr_chk_info ();
 
 #endif /* K&R C */
 
