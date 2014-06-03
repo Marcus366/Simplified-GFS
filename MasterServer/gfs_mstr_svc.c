@@ -139,7 +139,9 @@ init_chk_svcs() {
 
 static void
 init_filetree_root() {
-	gfs_create_node(&filetree_root, NULL, NULL);
+	file_t *file;
+	file_new(&file, "root", FILE_TYPE_FILE);
+	gfs_create_node(&filetree_root, NULL, file);
 }
 
 static void
@@ -196,9 +198,12 @@ main (int argc, char **argv) {
 
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	file_t *file;
-	//file = gfs_get_file_by_path(filetree_root, path);
+	file = gfs_get_file_by_path(filetree_root, path);
+	if(file == NULL) {
+		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
+	}
 	int fd = 100;//get_fd(file);
-	//file_create(path, mode, FILE_TYPE_FILE, filetree_root);
+	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
 	/* not implement */
 	return fd;

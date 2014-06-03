@@ -1,5 +1,6 @@
 #include "file.h"
 #include "gfs_filetree.h"
+#include "gfs_chk.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -10,7 +11,7 @@ int fd_count;
 void file_new(file_t **file, char* name, int type) {
 	*file = (file_t*)malloc(sizeof(file_t));
 	(*file)->type = type;
-
+	gfs_list_init(&((*file)->chunks));
 	strncpy((*file)->name, name, 32);
 	((*file)->name)[33] = 0;
 }
@@ -29,7 +30,7 @@ void file_free(file_t **file) {
 }
 
 
-void file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
+file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	gfs_node_t *node;
 	gfs_node_t *father;
 	file_t *file;
@@ -49,6 +50,7 @@ void file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 
 	file_new(&file, temp, type);
 	gfs_create_node(&node, father, file);
+	return file;
 }
 
 int binary_search_fds(int fd){

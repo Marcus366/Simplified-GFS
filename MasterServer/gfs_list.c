@@ -6,6 +6,8 @@
 void gfs_list_init(gfs_list_t **list) {
 	*list = (gfs_list_t*) malloc(sizeof(gfs_list_t));
 	(*list)->head = (listnode_t*) malloc(sizeof(listnode_t));
+	(*list)->head->next = NULL;
+	(*list)->head->elem = NULL;
 	(*list)->size = 0;
 }
 

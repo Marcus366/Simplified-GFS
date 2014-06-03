@@ -59,29 +59,29 @@ gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name) {
 	listnode_t *listnode;
 
 	listnode = gfs_list_findFirst(root->child);
+	printf("this is ff1 %p\n", listnode);
 
 	while( listnode != NULL) {
+		printf("this is ff2\n");
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
+		printf("this is ff3\n");
 		if( strcmp(name, tnode->file->name) == 0 ) {
 			return tnode;
 		}
 		listnode = listnode->next;
 	}
 	
+	printf("this is fnn1\n");
 	listnode = gfs_list_findFirst(root->child);
-	file_t* file;
-	file_new(&file, name, FILE_TYPE_FILE);
 
 	while( listnode != NULL) {
 		gfs_node_t *tnode = (gfs_node_t*)listnode->elem;
-		gfs_node_t* result = gfs_find_node(tnode, file);
+		gfs_node_t* result = gfs_find_node_by_name(tnode, name);
 		if(result != NULL){
-			file_free(&file);
 			return result;
 		}
 		listnode = listnode->next;
 	}
-	file_free(&file);
 	return NULL;
 }
 
@@ -93,23 +93,32 @@ file_t* gfs_get_file_by_path(gfs_node_t *root, const char *full_path) {
 	node = root;
 	count = 0;
 	st = 0;
+	printf("this is bi\n");
 	if(full_path[0] == '/') {
 		count++;
 		st++;
 	}
+	printf("this is bw\n");
 	while(full_path[count] != '\0') {
 		if(full_path[count] == '/') {
 			char temp[33];
+			printf("this is gf\n");
 			strncpy(temp, full_path + st, count - st);
+			printf("this is dd\n");
 			node = gfs_find_node_by_name(node, temp);
+			printf("this is jj\n");
 			st = count + 1;
 		}
 		count++;
+		printf("%d\n", count);
 	}
 	char temp[33];
+	printf("this is cpy\n");
 	strncpy(temp, full_path + st, count - st);
+	printf("this is fn2\n");
 	node = gfs_find_node_by_name(node, temp);
-
+	printf("this is fn3\n");
+	if(node == NULL)return NULL;
 	return node->file;
 }
 
@@ -147,7 +156,7 @@ void gfs_filetree_print(gfs_node_t *root){
 	while(node != NULL){
 		gfs_node_t * treenode;
 		treenode = node->elem;
-		printf("%s's child is%s\n", root->file->name, treenode->file->name);
+		printf("%s's child is %s\n", root->file->name, treenode->file->name);
 		gfs_filetree_print(treenode);
 		node = node->next;
 	}
