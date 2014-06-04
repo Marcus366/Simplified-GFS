@@ -36,43 +36,35 @@ file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	file_t *file;
 	int count = 0,st = 0;
 	char temp[33];
-
 	father = root;
+
+	if(path[0] == '/') {
+		count++;
+		st++;
+	}
 	while(path[count] != '\0') {
 		if(path[count] == '/') {
 			strncpy(temp, path + st, count - st);
-			father = gfs_find_node_by_name(node, temp);
+			printf("bffn\n");
+			father = gfs_find_node_by_name(father, temp);
 			st = count + 1;
 		}
 		count++;
 	}
-	strncpy(temp, path + st, count - st);
-
+	strncpy(temp, path + st, count - st );
+	temp[count - st] = '\0';
+	printf("path:%s temp:%s st:%d count:%d\n", path, temp, st, count);
 	file_new(&file, temp, type);
 	gfs_create_node(&node, father, file);
 	return file;
 }
 
 
-/*
-int binary_search_fds(int fd){
-	int st = 0, ed = fd_count - 1, mid;
-    while(st <= ed){			//binary search
-    	mid = (ed + st) / 2;
-    	if(fd == fds[mid]) return mid;
-    	else if(fd < fds[mid]) {
-    		ed = mid - 1;
-    	}
-    	else {
-    		st = mid + 1;
-    	}
-    }
-    return -1;
-}
-*/
-
 
 int get_fd(file_t* file){
+	if (file == NULL) {
+		return -1;
+	}
 	unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
  	unsigned int hash = 0; 
 	char* str = file->name;
@@ -82,9 +74,11 @@ int get_fd(file_t* file){
 	}
 
 	int fd = (hash & 0x7FFFFFFF);
-
-	while(fds[fd] != NULL){
+	fd %= MAX_FILE_SIZE;
+	while (fds[fd] != NULL) {
 		fd++;
+		fd %= MAX_FILE_SIZE;
 	}
+	printf("this is get_fd fd: %d\n", fd);
 	return fd;
 }
