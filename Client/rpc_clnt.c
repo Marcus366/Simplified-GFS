@@ -57,6 +57,7 @@ ask_mstr_write_1(write_args *argp, CLIENT *clnt) {
 		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
 	}
+
 	return (&clnt_res);
 }
 

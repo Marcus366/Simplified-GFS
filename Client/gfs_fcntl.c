@@ -87,13 +87,13 @@ ssize_t gfs_write(int fd, const void *buf, size_t nbytes) {
 	memcpy(args.buf, buf, nbytes);
 	pinfo = ask_mstr_write_1(&args, mstr_clnt);
 	if (pinfo == NULL) {
-		fprintf(stderr, "ask_mstr_read return NULL\n");
+		fprintf(stderr, "ask_mstr_write return NULL\n");
 		exit(-1);
 	}
-
+	printf("gfs_write, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo->fd);
 	chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
 	if (chk_cl == NULL) {
-		fprintf(stderr, "gfs_read, clnt_create failed\n");
+		fprintf(stderr, "gfs_write, clnt_create failed\n");
 		exit(-1);
 	}
 

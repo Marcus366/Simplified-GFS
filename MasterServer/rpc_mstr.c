@@ -90,19 +90,32 @@ ask_mstr_close_1_svc(close_args *args, struct svc_req *req) {
 
 chk_info*
 ask_mstr_read_1_svc(read_args *args, struct svc_req *req) {
-	static chk_info info;
+	static chk_info info = {NULL, NULL, 0};
+	if (info.name == NULL) {
+		info.name = (char*)malloc(65);
+	}
+	if (info.ip == NULL) {
+		info.ip = (char*)malloc(16);
+	}
 
-	info = on_clnt_read(args->fd);
-
+	on_clnt_read(args->fd, &info);
+	printf("on_clnt_read, name %s, ip %s, fd %d\n", info.name, info.ip, info.fd);
 	return &info;
 }
 
 
 chk_info*
 ask_mstr_write_1_svc(write_args *args, struct svc_req *req) {
-	static chk_info info;
-
-	info = on_clnt_write(args->fd);
+	static chk_info info = {NULL, NULL, 0};
+	if (info.name == NULL) {
+		info.name = (char*)malloc(65);
+	}
+	if (info.ip == NULL) {
+		info.ip = (char*)malloc(16);
+	}
+	
+	on_clnt_write(args->fd, &info);
+	printf("ask_mstr_write_1_svc, name %s, ip %s, fd %d\n", info.name, info.ip, info.fd);
 
 	return &info;
 }

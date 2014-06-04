@@ -1,8 +1,9 @@
 #include "file.h"
 #include "gfs_filetree.h"
 #include "gfs_chk.h"
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 file_t *fds[MAX_FILE_SIZE];			
 int fd_count;
@@ -60,7 +61,6 @@ file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 }
 
 
-
 int get_fd(file_t* file){
 	if (file == NULL) {
 		return -1;
@@ -79,6 +79,7 @@ int get_fd(file_t* file){
 		fd++;
 		fd %= MAX_FILE_SIZE;
 	}
+
 	printf("this is get_fd fd: %d\n", fd);
 	return fd;
 }
