@@ -212,21 +212,31 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 		gfs_list_push_back(file->chunks, (void*)chk);
 	}
 	int fd = get_fd(file);
-	if(fd == -1) return -1;
+	if(fd == -1) {
+		return -1;
+	}
 	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
 	gfs_chk_t *chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
 	char name[64];
 	sprintf(name,"%llu",chk->uuid);
 	printf("uuid:%s\n", name);
-	//ask_chksvc_open(0, name, oflags, mode);
+	ask_chksvc_open(0, name, oflags, mode);
 	/* not implement */
 	return fd;
 }
 
 
 int on_clnt_close(int fd) {
+	file_t *file;
+	gfs_chk_t *chk;
+
 	printf("close fd: %d\n", fd);
+	file = fds[fd];
+	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	ask_chksvc_close(0, chk->chk_fd);
+	chk->chk_fd = -1;
+
 	return 0;
 }
 

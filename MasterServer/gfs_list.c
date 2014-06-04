@@ -43,14 +43,14 @@ listnode_t* gfs_list_get(gfs_list_t *list, int pos) {
 
 	if (pos < 0 || pos > list->size) {
 		cur = NULL;
-	}	else {
-		cur = list->head;
+	} else {
+		cur = list->head->next;
 		while (pos--) {
 			cur = cur->next;
 		}
 	}
 
-	return NULL;
+	return cur;
 }
 
 
