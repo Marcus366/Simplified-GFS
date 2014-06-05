@@ -68,7 +68,7 @@ extern listnode_t *gfs_list_get(gfs_list_t *list, int pos);
 extern listnode_t *gfs_list_findFirst(gfs_list_t *list);
 extern listnode_t *gfs_list_findNext(listnode_t *node);
 extern void gfs_list_free(gfs_list_t **list); 
-extern void gfs_list_print(gfs_list_t *list);
+/* extern void gfs_list_print(gfs_list_t *list); */
 
 
 #endif

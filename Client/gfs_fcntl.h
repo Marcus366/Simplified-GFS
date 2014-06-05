@@ -1,6 +1,5 @@
 /**
- * This file contains file operation.
- * It is the same as POSIX standard.
+ * The gfs_fcntl.h contains the file operation of GFS, which is uesd the same as POSIX standard IO.
  */
 
 #ifndef __GFS_FCNTL_H__

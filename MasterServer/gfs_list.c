@@ -43,14 +43,14 @@ listnode_t* gfs_list_get(gfs_list_t *list, int pos) {
 
 	if (pos < 0 || pos > list->size) {
 		cur = NULL;
-	}	else {
-		cur = list->head;
+	} else {
+		cur = list->head->next;
 		while (pos--) {
 			cur = cur->next;
 		}
 	}
 
-	return NULL;
+	return cur;
 }
 
 
@@ -117,7 +117,7 @@ void gfs_list_free(gfs_list_t **list) {
 	free(*list);
 	*list = NULL;
 }
-
+/*
 void gfs_list_print(gfs_list_t *list) {
 	listnode_t *listnode = list->head->next;
 	while (listnode != NULL) {
@@ -125,3 +125,4 @@ void gfs_list_print(gfs_list_t *list) {
 		listnode = listnode->next;
 	}
 }
+*/

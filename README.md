@@ -5,12 +5,38 @@ a Simplified GFS implementation
 
 ================================================================================
 
+*Simplified-GFS* is a simplified version of *Google File System*. The paper about *GFS* is easily accessible on network. Here is one of the main paper: http://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf
+
+
+*GFS* makes up of one or more *Master Servers* and many of *Chunk Servers*. The *Master Server* deal with the control message, and is responsible for dispatch between *Client* and *Chunk Server*, but it is NOT interested in the data, so the data flow should not reach *Master Server* which release the *Master Server* burden so that it wiil not become the performance bottleneck.
+
+================================================================================
+
+*Master Server*
+
+
+In more details, the *Master Server* contains the file metadata all in memory, such as the file tree and the file descriptors' mapping information. 
+
+================================================================================
+
+*Chunk Server*
+
+
+================================================================================
+
+*Client*
+
+
+================================================================================
+
+*RPC*
+
+
 The Simplified-GFS use RPC(Remote Procedure Call) for communicate with the hosts namely clnt(client), mstr(master_server) and chk(chunk_server). If you want to know more information about RPC, you can read the document http://docs.oracle.com/cd/E19963-01/pdf/821-1671.pdf.
 
 ================================================================================
 
 The SGFS aim to implement the POSIX's(Portable Operating System Interface for Unix) file interfaces. They are
-
 
 
 int open(const char *path, int oflags, mode_t mode);
@@ -28,7 +54,7 @@ which is implemented in the distributed way but cover the details
 
 DETAILS
 
-OPEN with O_CREAT
+OPEN
 
 client first make a remote call OPEN. master receive the call and do:
 

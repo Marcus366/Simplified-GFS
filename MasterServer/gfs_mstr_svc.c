@@ -11,6 +11,7 @@
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 
 #ifndef SIG_PF
@@ -23,8 +24,8 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 	union {
 		open_args ask_mstr_open_1_arg;
 		close_args ask_mstr_close_1_arg;
-		read_args gfs_read_1_arg;
-		write_args gfs_write_1_arg;
+		read_args ask_mstr_read_1_arg;
+		write_args ask_mstr_write_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -49,13 +50,13 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 	case ask_mstr_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_read_1_svc;
 		break;
 
 	case ask_mstr_write:
 		_xdr_argument = (xdrproc_t) xdr_write_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_write_1_svc;
 		break;
 
@@ -204,47 +205,77 @@ main (int argc, char **argv) {
 
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	file_t *file;
+	int gfs_fd, chk_fd;
+	gfs_chk_t *chk;
+	char chk_name[65];
+
 	file = gfs_get_file_by_path(filetree_root, path);
-	if(file == NULL && oflags & O_CREAT) {
+	if (file == NULL && (oflags & O_CREAT)) {
 		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
-		gfs_chk_t *chk;
 		gfs_chk_new(&chk);
+		inet_aton(gfs_list_findFirst(chk_svcs)->elem, (struct in_addr*)&chk->chk_addr);
 		gfs_list_push_back(file->chunks, (void*)chk);
 	}
-	int fd = get_fd(file);
-	if(fd == -1) return -1;
+	gfs_fd = get_fd(file);
+	if (gfs_fd == -1) {
+		return -1;
+	}
+	fds[gfs_fd] = file;
 	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
-	gfs_chk_t *chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
-	char name[64];
-	sprintf(name,"%llu",chk->uuid);
-	printf("uuid:%s\n", name);
-	//ask_chksvc_open(0, name, oflags, mode);
+	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+
+	sprintf(chk_name,"%llu",chk->uuid);
+	printf("uuid:%s\n", chk_name);
+	chk_fd = ask_chksvc_open(0, chk_name, oflags, mode);
+	chk->chk_fd = chk_fd;
 	/* not implement */
-	return fd;
+	return gfs_fd;
 }
 
 
 int on_clnt_close(int fd) {
+	file_t *file;
+	gfs_chk_t *chk;
+
 	printf("close fd: %d\n", fd);
+	file = fds[fd];
+	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	ask_chksvc_close(0, chk->chk_fd);
+	chk->chk_fd = -1;
+
 	return 0;
 }
 
 
-ssize_t on_clnt_read(int fd, void *buf, size_t count) {
-	/* not impelement */
-	return 0;
+void on_clnt_read(int fd, chk_info *info) {
+	file_t* file;
+	gfs_chk_t *chk;
+
+	file = fds[fd];
+	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+
+	sprintf(info->name, "%llu", chk->uuid);
+	sprintf(info->ip, "%u", chk->chk_addr);
+	info->fd = chk->chk_fd;
+
+	printf("on_clnt_read, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
 }
 
 
-ssize_t on_clnt_write(int fd, const void *buf, size_t nbytes) {
-	/* not implement */
-	char *pbuf;
-	pbuf = (char*)malloc(nbytes + 1);
-	memcpy(pbuf, buf, nbytes);
-	pbuf[nbytes] = 0;
-	printf("%s\n", pbuf);
-	return nbytes;
+void on_clnt_write(int fd, chk_info *info) {
+	file_t* file;
+	gfs_chk_t *chk;
+
+	printf("on_clnt_write fd: %d\n", fd);
+	file = fds[fd];
+	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+
+	sprintf(info->name, "%llu", chk->uuid);
+	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
+	info->fd = chk->chk_fd;
+
+	printf("on_clnt_write, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
 }
 
 int on_chk_reg(char *ip) {
@@ -258,16 +289,15 @@ int on_chk_reg(char *ip) {
 	}
 	gfs_list_push_back(chk_clnts, cl);
 
-	char *aip = malloc(sizeof(ip));
-	strcpy(aip,ip);
-	gfs_list_push_back(chk_svcs, aip);
+	char *chksvc_ip = (char*)malloc(strlen(ip) + 1);
+	strcpy(chksvc_ip, ip);
+	gfs_list_push_back(chk_svcs, chksvc_ip);
 
 	return 0;
 }
 
 int on_chk_unreg(char *ip) {
-	char *aip = malloc(sizeof(ip));
-	strcpy(aip,ip);
-	gfs_list_delete(chk_svcs, aip);
+	/* not implement */
+
 	return 0;
 }

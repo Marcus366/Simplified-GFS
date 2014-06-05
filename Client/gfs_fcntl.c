@@ -1,9 +1,11 @@
 #include "gfs_rpc.h"
 #include "gfs_clnt.h"
-#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
+#include <string.h>
 #include <stdio.h>
 #include <stddef.h>
+
 
 int gfs_open(const char *path, int oflags, mode_t mode) {
 	int *pfd;
@@ -46,27 +48,63 @@ int gfs_close(int fd) {
 
 
 ssize_t gfs_read(int fd, void *buf, size_t count) {
-	/* not implement */
-	//static ssize_t *psize;
-	return 0;
+	CLIENT *chk_cl;
+	chk_info *pinfo;
+	read_args args;
+	read_res *res;
+
+	args.fd = fd;
+	args.count = count;
+	pinfo = ask_mstr_read_1(&args, mstr_clnt);
+	if (pinfo == NULL) {
+		fprintf(stderr, "ask_mstr_read return NULL\n");
+		exit(-1);
+	}
+
+	chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
+	if (chk_cl == NULL) {
+		fprintf(stderr, "gfs_read, clnt_create failed\n");
+		exit(-1);
+	}
+
+	args.fd = pinfo->fd;
+	res = ask_chk_read_1(&args, chk_cl);
+	memcpy(buf, res->buf, res->ssize);
+
+	return (ssize_t)res->ssize;
 }
 
 
 ssize_t gfs_write(int fd, const void *buf, size_t nbytes) {
-	int *psize;
-	write_args arg;
+	int *res;
+	CLIENT *chk_cl;
+	chk_info *pinfo;
+	write_args args;
 
-	arg.fd = fd;
-	arg.nbytes = nbytes;
-	arg.buf = malloc(nbytes);
-	memcpy(arg.buf, buf, nbytes);
-
-	psize = ask_mstr_write_1(&arg, mstr_clnt);
-
-	if (psize == NULL) {
-		fprintf(stderr, "write return NULL");
-		return -1;
+	args.fd = fd;
+	args.nbytes = nbytes;
+	args.buf = (char*)malloc(nbytes);
+	memcpy(args.buf, buf, nbytes);
+	pinfo = ask_mstr_write_1(&args, mstr_clnt);
+	if (pinfo == NULL) {
+		fprintf(stderr, "ask_mstr_write return NULL\n");
+		exit(-1);
+	}
+	printf("gfs_write, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo->fd);
+	chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
+	if (chk_cl == NULL) {
+		fprintf(stderr, "gfs_write, clnt_create failed\n");
+		exit(-1);
 	}
 
-	return (ssize_t)(*psize);
+	args.fd = pinfo->fd;
+	res = ask_chk_write_1(&args, chk_cl);
+	free(args.buf);
+
+	if (res == NULL) {
+		fprintf(stderr, "ask_chk_write_1 return NULL");
+		exit(-1);
+	}
+
+	return (ssize_t)*res;
 }

@@ -1,14 +1,15 @@
 #include "file.h"
 #include "gfs_filetree.h"
 #include "gfs_chk.h"
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 file_t *fds[MAX_FILE_SIZE];			
 int fd_count;
 
 
-void file_new(file_t **file, char* name, int type) {
+void file_new(file_t **file, const char* name, int type) {
 	*file = (file_t*)malloc(sizeof(file_t));
 	(*file)->type = type;
 	gfs_list_init(&((*file)->chunks));
@@ -61,20 +62,24 @@ file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 
 
 int get_fd(file_t* file){
-	if(file == NULL)return -1;
+	if (file == NULL) {
+		return -1;
+	}
 	unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
-    unsigned int hash = 0; 
-    char* str = file->name;
-    while (*str) {
-        hash = hash * seed + (*str++);
-    }
- 
-    int fd = (hash & 0x7FFFFFFF);
-    fd %= MAX_FILE_SIZE;
-  	while(fds[fd] != NULL){
-        fd++;
-        fd %= MAX_FILE_SIZE;
-    }
-    printf("this is get_fd fd: %d\n", fd);
-    return fd;
+ 	unsigned int hash = 0; 
+	char* str = file->name;
+
+	while (*str) {
+		hash = hash * seed + (*str++);
+	}
+
+	int fd = (hash & 0x7FFFFFFF);
+	fd %= MAX_FILE_SIZE;
+	while (fds[fd] != NULL) {
+		fd++;
+		fd %= MAX_FILE_SIZE;
+	}
+
+	printf("this is get_fd fd: %d\n", fd);
+	return fd;
 }
