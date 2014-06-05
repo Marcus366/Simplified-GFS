@@ -1,7 +1,9 @@
 #include "gfs_rpc.h"
+#include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 
+#define CHK_SIZE 1024
 
 static struct timeval TIMEOUT = { 25, 0 };
 
@@ -61,9 +63,20 @@ ask_chk_close_1_svc(close_args *args, struct svc_req *req) {
 int*
 ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
 	static int res;
+	struct stat file_stat;
 
 	printf("ask_chk_write_svc: %s\n", args->buf);
-	res = write(args->fd, args->buf, args->nbytes);
+	if (fstat(args->fd, &file_stat) == -1) {
+		res = -1;
+		return &res;
+	}
+
+	printf("ask_chk_write_svc: chk_size %ld\n", file_stat.st_size);
+	if (args->nbytes + file_stat.st_size < CHK_SIZE) {
+		res = write(args->fd, args->buf, args->nbytes);
+	} else {
+		res = write(args->fd, args->buf, CHK_SIZE - file_stat.st_size);
+	}
 
 	return &res;
 }

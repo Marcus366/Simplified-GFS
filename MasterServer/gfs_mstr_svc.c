@@ -26,6 +26,7 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 		close_args ask_mstr_close_1_arg;
 		read_args ask_mstr_read_1_arg;
 		write_args ask_mstr_write_1_arg;
+		int ask_mstr_newchk_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -58,6 +59,12 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 		_xdr_argument = (xdrproc_t) xdr_write_args;
 		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_write_1_svc;
+		break;
+
+	case ask_mstr_newchk:
+		_xdr_argument = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_newchk_1_svc;
 		break;
 
 	default:
@@ -149,9 +156,10 @@ init_filetree_root() {
 
 static void
 init_fds() {
-	fd_count = 0;
 	int i;
-	for(i = 0;i<MAX_FILE_SIZE;++i) {
+
+	fd_count = 0;
+	for (i = 0; i < MAX_FILE_SIZE; ++i) {
 		fds[i] = NULL;
 	}
 }
@@ -277,6 +285,12 @@ void on_clnt_write(int fd, chk_info *info) {
 
 	printf("on_clnt_write, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
 }
+
+
+void on_clnt_newchk(int fd, chk_info *info) {
+	/* not implement */
+}
+
 
 int on_chk_reg(char *ip) {
 	CLIENT *cl;

@@ -90,20 +90,34 @@ ssize_t gfs_write(int fd, const void *buf, size_t nbytes) {
 		fprintf(stderr, "ask_mstr_write return NULL\n");
 		exit(-1);
 	}
+
 	printf("gfs_write, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo->fd);
 	chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
 	if (chk_cl == NULL) {
 		fprintf(stderr, "gfs_write, clnt_create failed\n");
 		exit(-1);
 	}
-
 	args.fd = pinfo->fd;
+
+repeat:
 	res = ask_chk_write_1(&args, chk_cl);
-	free(args.buf);
 
 	if (res == NULL) {
 		fprintf(stderr, "ask_chk_write_1 return NULL");
+		free(args.buf);
 		exit(-1);
+	} else if (*res < nbytes) {
+		buf 	= buf + *res;
+		nbytes 	= nbytes - *res;
+		/* pinfo = ask_mstr_newchk(fd); */
+		if (pinfo == NULL) {
+			fprintf(stderr, "ask_mstr_write return NULL\n");
+			exit(-1);
+		}
+		args.fd = pinfo->fd;
+		args.nbytes = nbytes;
+		strcpy(args.buf, buf);
+		goto repeat;
 	}
 
 	return (ssize_t)*res;

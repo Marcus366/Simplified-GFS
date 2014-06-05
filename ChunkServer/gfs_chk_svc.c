@@ -20,13 +20,13 @@
 #endif
 
 
-CLIENT *cl;
-
-
 static void*
 pthread_init_clnt(void *arg) {
-	char **argv = (char**)arg;
+	CLIENT *cl;
+	char **argv;
+
 	sleep(1);
+	argv = (char**)arg;
 	printf("pthread_init_clnt: %s\n", argv[2]);
 	if ((cl = clnt_create(argv[2], CHK_MSTR_PROG, VERSION, "tcp")) == NULL) {
 		fprintf(stderr, "create clnt error\n");
