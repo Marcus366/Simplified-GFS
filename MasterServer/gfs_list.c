@@ -72,6 +72,7 @@ void gfs_list_push_back(gfs_list_t *list, void* elem) {
 		listnode = listnode->next;
 	}
 	listnode->next = inserting;
+	inserting->next = NULL;
 	list->size++;
 }
 
