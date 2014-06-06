@@ -221,8 +221,11 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	if (file == NULL && (oflags & O_CREAT)) {
 		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
 		gfs_chk_new(&chk);
-		inet_aton(gfs_list_findFirst(chk_svcs)->elem, (struct in_addr*)&chk->chk_addr);
-		gfs_list_push_back(file->chunks, (void*)chk);
+		gfs_chksvc_t *chksvc;
+		chksvc = (gfs_chksvc_t*)gfs_list_findFirst(chk_svcs)->elem;
+		inet_aton(chksvc->ip, (struct in_addr*)&chk->chk_addr);
+		gfs_list_push_front(file->chunks, (void*)chk);
+		gfs_list_push_front(chksvc->chks, (void*)chk);
 	}
 
 	gfs_fd = 1;
@@ -295,12 +298,51 @@ void on_clnt_write(int fd, chk_info *info) {
 
 
 void on_clnt_newchk(int fd, chk_info *info) {
+	if(fds[fd] == NULL) {
+		return;
+	}
+
+	gfs_chk_t *chk;
+	gfs_chksvc_t *chksvc;
+	gfs_chksvc_t *minp;
+	int chk_fd;
+	char chk_name[65];
+	listnode_t *listnode;
+	int min = MAX_FILE_SIZE;
+
+	listnode = gfs_list_findFirst(chk_svcs);
+	while(listnode != NULL) {
+		chksvc = (gfs_chksvc_t*)listnode->elem;
+		if(chksvc != NULL && chksvc->chk_size < min) {
+			min = chksvc->chk_size;
+			minp = chksvc;
+		}
+	}
+	chksvc = minp;
+
+	gfs_chk_new(&chk);				/* uuid should be assigned */
+	srand((int)time(NULL)); 
+	chk->uuid = rand();
+	sprintf(chk_name,"%llu",chk->uuid);
+	printf("uuid:%s\n", chk_name);
+	chk_fd = ask_chksvc_open(0, chk_name, O_CREAT | O_RDWR, 0644);
+	chk->chk_fd = chk_fd;
+	inet_aton(chksvc->ip, (struct in_addr*)&chk->chk_addr);
+	gfs_list_push_front(fds[fd]->chunks, chk);
+	gfs_list_push_front(chksvc->chks, chk);
+
+	sprintf(info->name, "%llu", chk->uuid);
+	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
+	info->fd = chk->chk_fd;
+
+	printf("on_clnt_newchk, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
 	/* not implement */
 }
 
 
 int on_chk_reg(char *ip) {
 	CLIENT *cl;
+	gfs_chksvc_t *chksvc;
 
 	printf("on_chk_reg, reg ip: %s\n", ip);
 	cl = clnt_create(ip, MSTR_CHK_PROG, VERSION, "tcp");
@@ -312,7 +354,10 @@ int on_chk_reg(char *ip) {
 
 	char *chksvc_ip = (char*)malloc(strlen(ip) + 1);
 	strcpy(chksvc_ip, ip);
-	gfs_list_push_back(chk_svcs, chksvc_ip);
+	gfs_chksvc_new(&chksvc);
+	strcpy(chksvc->ip, chksvc_ip);
+
+	gfs_list_push_front(chk_svcs, chksvc);
 
 	return 0;
 }
