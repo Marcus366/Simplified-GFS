@@ -92,5 +92,7 @@ ask_chk_read_1_svc(read_args *args, struct svc_req *req) {
 	res.buf = (char*)malloc(args->count);
 	res.ssize = read(args->fd, res.buf, args->count);
 	
+	printf("ask_chk_read_1_svc, read: %s\n", res.buf);
+
 	return &res;
 }

@@ -61,6 +61,7 @@ ssize_t gfs_read(int fd, void *buf, size_t count) {
 		exit(-1);
 	}
 
+	//printf("gfs_read, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo->fd);
 	chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
 	if (chk_cl == NULL) {
 		fprintf(stderr, "gfs_read, clnt_create failed\n");
@@ -69,8 +70,13 @@ ssize_t gfs_read(int fd, void *buf, size_t count) {
 
 	args.fd = pinfo->fd;
 	res = ask_chk_read_1(&args, chk_cl);
+	if (res == NULL) {
+		fprintf(stderr, "gfs_read, ask_chk_read failed\n");
+		exit(-1);
+	}
 	memcpy(buf, res->buf, res->ssize);
 
+	clnt_destroy(chk_cl);
 	return (ssize_t)res->ssize;
 }
 
@@ -117,8 +123,11 @@ repeat:
 		args.fd = pinfo->fd;
 		args.nbytes = nbytes;
 		strcpy(args.buf, buf);
+
+		/* clnt_destroy(chk_cl); */
+		/* chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp"); */
 		goto repeat;
 	}
-
+	clnt_destroy(chk_cl);
 	return (ssize_t)*res;
 }

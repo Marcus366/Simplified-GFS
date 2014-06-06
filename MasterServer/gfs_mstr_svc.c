@@ -224,11 +224,13 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 		inet_aton(gfs_list_findFirst(chk_svcs)->elem, (struct in_addr*)&chk->chk_addr);
 		gfs_list_push_back(file->chunks, (void*)chk);
 	}
-	gfs_fd = get_fd(file);
-	if (gfs_fd == -1) {
-		return -1;
+
+	gfs_fd = 1;
+	while (fds[gfs_fd] != NULL) {
+		++gfs_fd;
 	}
 	fds[gfs_fd] = file;
+
 	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
 	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
@@ -237,6 +239,9 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	printf("uuid:%s\n", chk_name);
 	chk_fd = ask_chksvc_open(0, chk_name, oflags, mode);
 	chk->chk_fd = chk_fd;
+	if (chk_fd == -1) {
+		/* not implement */
+	}
 	/* not implement */
 	return gfs_fd;
 }
@@ -252,6 +257,8 @@ int on_clnt_close(int fd) {
 	ask_chksvc_close(0, chk->chk_fd);
 	chk->chk_fd = -1;
 
+	fds[fd] = NULL;
+
 	return 0;
 }
 
@@ -264,7 +271,7 @@ void on_clnt_read(int fd, chk_info *info) {
 	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
 
 	sprintf(info->name, "%llu", chk->uuid);
-	sprintf(info->ip, "%u", chk->chk_addr);
+	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
 	info->fd = chk->chk_fd;
 
 	printf("on_clnt_read, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);

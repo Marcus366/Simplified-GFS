@@ -99,7 +99,6 @@ ask_mstr_read_1_svc(read_args *args, struct svc_req *req) {
 	}
 
 	on_clnt_read(args->fd, &info);
-	printf("on_clnt_read, name %s, ip %s, fd %d\n", info.name, info.ip, info.fd);
 	return &info;
 }
 

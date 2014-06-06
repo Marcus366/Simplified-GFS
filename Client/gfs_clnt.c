@@ -12,7 +12,7 @@ static int init_clnt(const char*);
 
 int
 main(int argc, char **argv) {
-	int fd;
+	int fd = 75484;
 	char c, buf[256];
 
 	if (argc != 2) {
@@ -24,14 +24,20 @@ main(int argc, char **argv) {
 		perror("clnt_create error");
 		return -1;
 	}
-	
+
 	while ((c = getchar())) {
 		if (c == '\n') continue;
 		switch(c) {
+			case 'O':
+				scanf("%s", buf);
+				fd = gfs_open(buf, O_CREAT | O_RDWR, 0644);
+				printf("open(O_CREAT) the file of fd: %d\n", fd);
+				break;
 			case 'o':
 				scanf("%s", buf);
-				fd = gfs_open(buf, O_CREAT | O_RDWR, 0);
-				printf("open the file of fd: %d\n", fd);break;
+				fd = gfs_open(buf, O_RDWR, 0644);
+				printf("open the file of fd: %d\n", fd);
+				break;
 			case 'c':
 				scanf("%d", &fd);
 				gfs_close(fd);
@@ -40,6 +46,11 @@ main(int argc, char **argv) {
 				scanf("%s", buf);
 				gfs_write(fd, buf, strlen(buf) + 1);
 				printf("write fd(%d): %s\n", fd, buf);
+				break;
+			case 'r':
+				while (gfs_read(fd, buf, 255) > 0) {
+					printf("%s", buf);
+				}
 				break;
 			default:
 				printf("error input\n");

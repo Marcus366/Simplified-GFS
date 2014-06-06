@@ -35,6 +35,8 @@ pthread_init_clnt(void *arg) {
 
 	reg_chk_1(&argv[1], cl);
 
+	clnt_destroy(cl);
+
 	return NULL;
 }
 
@@ -122,7 +124,7 @@ clnt_chk_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 	case ask_chk_read:
 		_xdr_argument = (xdrproc_t) xdr_read_args;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_read_res;
 		local = (char *(*)(char *, struct svc_req *)) ask_chk_read_1_svc;
 		break;
 
