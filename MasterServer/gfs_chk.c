@@ -4,6 +4,7 @@
 void gfs_chk_new(gfs_chk_t **chk) {
 	*chk = (gfs_chk_t*)malloc(sizeof(gfs_chk_t));
 	(*chk)->chk_fd = -1;
+	(*chk)->uuid = 0;
 }
 
 
