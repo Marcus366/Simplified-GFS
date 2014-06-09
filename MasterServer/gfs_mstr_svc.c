@@ -238,6 +238,10 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 		chk->chksvc = chksvc;
 	}
 
+	if (file == NULL) {
+		return -1;
+	}
+
 	gfs_fd = 1;
 	while (fds[gfs_fd] != NULL) {
 		++gfs_fd;
@@ -246,7 +250,12 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 
 	gfs_filetree_print(filetree_root);
 	printf("path: %s\n", path);
-	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+
+	if (oflags & O_APPEND) {
+		chk = (gfs_chk_t*)gfs_list_get(file->chunks, file->chunks->size - 1)->elem;
+	} else {
+		chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	}
 
 	sprintf(chk_name,"%llu",chk->uuid);
 	printf("uuid:%s\n", chk_name);
