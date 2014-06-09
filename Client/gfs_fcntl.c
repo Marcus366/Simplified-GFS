@@ -115,7 +115,7 @@ repeat:
 	} else if (*res < nbytes) {
 		buf 	= buf + *res;
 		nbytes 	= nbytes - *res;
-		/* pinfo = ask_mstr_newchk(fd); */
+		pinfo = ask_mstr_newchk_1(&fd, mstr_clnt);
 		if (pinfo == NULL) {
 			fprintf(stderr, "ask_mstr_write return NULL\n");
 			exit(-1);
@@ -124,8 +124,8 @@ repeat:
 		args.nbytes = nbytes;
 		strcpy(args.buf, buf);
 
-		/* clnt_destroy(chk_cl); */
-		/* chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp"); */
+		clnt_destroy(chk_cl);
+		chk_cl = clnt_create(pinfo->ip, CLNT_CHK_PROG, VERSION, "tcp");
 		goto repeat;
 	}
 	clnt_destroy(chk_cl);

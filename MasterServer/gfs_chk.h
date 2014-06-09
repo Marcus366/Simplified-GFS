@@ -3,18 +3,18 @@
 
 #include <stdint.h>
 #include "gfs_list.h"
+#include "gfs_rpc.h"
 
 
 typedef struct gfs_chk_s {
-	uint64_t uuid;				/* the unique id of chunk    			*/
-	uint32_t chk_addr; 			/* chunk location server address 		*/
-	int	 chk_fd; 			/* chunk server fd if opened,  -1 otherwise	*/
+	struct gfs_chksvc_s 	*chksvc;
+	uint64_t 		uuid;		/* the unique id of chunk    			*/
+	int	 		chk_fd;		/* chunk server fd if opened,  -1 otherwise	*/
 } gfs_chk_t;
 
-typedef struct gfs_chksvc_s
-{
-	char ip[5];   /* ip address */
-	uint32_t chk_size;     /* the count of stored chunk */
+typedef struct gfs_chksvc_s {
+	char ip[16]; 		/* ip address */
+	CLIENT *chk_clnt; 	/* a connection between master and chunk server */
 	gfs_list_t *chks;
 } gfs_chksvc_t;
 

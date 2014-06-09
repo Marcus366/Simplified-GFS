@@ -5,8 +5,8 @@
 #include <fcntl.h>
 #include <sys/types.h>
 
-extern int ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode);
-extern int ask_chksvc_close(int chk, int fd);
+extern int ask_chksvc_open(gfs_chk_t *chk, const char *name, int oflags, mode_t mode);
+extern int ask_chksvc_close(gfs_chk_t *chk, int fd);
 
 
 #endif

@@ -18,12 +18,12 @@ struct gfs_list_s {
 };
 
 
-/* It means that listnode_free_func
- * is a function return void and 
- * receive a void** as argument.
- * This serve as argument of gfs_list_free
+/*
+ * It means that listnode_free_func
+ * is a function return void and receive a void* as argument.
+ * This will serve as argument of gfs_list_free in later version
  */
-typedef  void (*listnode_free_func)(void **);
+typedef  void (*listnode_free_func)(void *);
 
 
 #define gfs_list_push_back(__list, __elem) \
@@ -47,10 +47,9 @@ typedef  void (*listnode_free_func)(void **);
  */
 #define gfs_list_foreach(__list, __elem) 				\
 	if (__list != NULL && __list->size > 0)			\
-		listnode_t *__tmp;				\
-		for (__tmp = __list->head->next;			\
-		       __tmp && __elem = __tmp->elem; 		\
-		       __tmp = __tmp->next)
+		for (__elem = __list->head->next;			\
+			__elem != NULL;				\
+			__elem = __elem->next)
 
 
 extern void gfs_list_init(gfs_list_t **list);

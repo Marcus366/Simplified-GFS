@@ -6,6 +6,7 @@
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <rpc/pmap_clnt.h>
 #include <string.h>
 #include <memory.h>
@@ -221,11 +222,15 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	if (file == NULL && (oflags & O_CREAT)) {
 		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
 		gfs_chk_new(&chk);
+		srand((int)time(NULL));
+		chk->uuid = rand();
+
 		gfs_chksvc_t *chksvc;
 		chksvc = (gfs_chksvc_t*)gfs_list_findFirst(chk_svcs)->elem;
-		inet_aton(chksvc->ip, (struct in_addr*)&chk->chk_addr);
 		gfs_list_push_front(file->chunks, (void*)chk);
 		gfs_list_push_front(chksvc->chks, (void*)chk);
+
+		chk->chksvc = chksvc;
 	}
 
 	gfs_fd = 1;
@@ -240,12 +245,17 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 
 	sprintf(chk_name,"%llu",chk->uuid);
 	printf("uuid:%s\n", chk_name);
-	chk_fd = ask_chksvc_open(0, chk_name, oflags, mode);
+	chk_fd = ask_chksvc_open(chk, chk_name, oflags, mode);
 	chk->chk_fd = chk_fd;
 	if (chk_fd == -1) {
 		/* not implement */
 	}
 	/* not implement */
+
+	file->cur_chk = chk;
+	file->oflags = oflags;
+	file->mode = mode;
+
 	return gfs_fd;
 }
 
@@ -256,10 +266,11 @@ int on_clnt_close(int fd) {
 
 	printf("close fd: %d\n", fd);
 	file = fds[fd];
-	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
-	ask_chksvc_close(0, chk->chk_fd);
+	chk = file->cur_chk;
+	ask_chksvc_close(chk, chk->chk_fd);
 	chk->chk_fd = -1;
 
+	file->cur_chk = NULL;
 	fds[fd] = NULL;
 
 	return 0;
@@ -271,10 +282,10 @@ void on_clnt_read(int fd, chk_info *info) {
 	gfs_chk_t *chk;
 
 	file = fds[fd];
-	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	chk = file->cur_chk;
 
 	sprintf(info->name, "%llu", chk->uuid);
-	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
+	strcpy(info->ip, chk->chksvc->ip);
 	info->fd = chk->chk_fd;
 
 	printf("on_clnt_read, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
@@ -287,10 +298,10 @@ void on_clnt_write(int fd, chk_info *info) {
 
 	printf("on_clnt_write fd: %d\n", fd);
 	file = fds[fd];
-	chk = (gfs_chk_t*)(gfs_list_findFirst(file->chunks)->elem);
+	chk = file->cur_chk;
 
 	sprintf(info->name, "%llu", chk->uuid);
-	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
+	strcpy(info->ip, chk->chksvc->ip);
 	info->fd = chk->chk_fd;
 
 	printf("on_clnt_write, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
@@ -298,42 +309,60 @@ void on_clnt_write(int fd, chk_info *info) {
 
 
 void on_clnt_newchk(int fd, chk_info *info) {
-	if(fds[fd] == NULL) {
+	file_t *file;
+	gfs_chk_t *chk;
+	gfs_chksvc_t *chksvc, *min_chksvc;
+	listnode_t *tmp;
+	char chk_name[65];
+	int min_size;
+
+	file = fds[fd];
+	if (file == NULL) {
 		return;
 	}
 
-	gfs_chk_t *chk;
-	gfs_chksvc_t *chksvc;
-	gfs_chksvc_t *minp;
-	int chk_fd;
-	char chk_name[65];
-	listnode_t *listnode;
-	int min = MAX_FILE_SIZE;
+	tmp = gfs_list_find(file->chunks, file->cur_chk);
+	chk = (gfs_chk_t*)tmp->elem;
+	ask_chksvc_close(chk, chk->chk_fd);
+	chk->chk_fd = -1;
 
-	listnode = gfs_list_findFirst(chk_svcs);
-	while(listnode != NULL) {
-		chksvc = (gfs_chksvc_t*)listnode->elem;
-		if(chksvc != NULL && chksvc->chk_size < min) {
-			min = chksvc->chk_size;
-			minp = chksvc;
+	tmp = tmp->next;
+	if (tmp == NULL) {
+		min_chksvc = (gfs_chksvc_t*)gfs_list_findFirst(chk_svcs)->elem;
+		if (min_chksvc == NULL) {
+			return;
 		}
+		min_size = MAX_FILE_SIZE;
+		gfs_list_foreach(chk_svcs, tmp) {
+			chksvc = (gfs_chksvc_t*)tmp->elem;
+			if (chksvc != NULL && chksvc->chks->size < min_size) {
+				min_size = chksvc->chks->size;
+				min_chksvc = chksvc;
+			}
+		}
+		chksvc = min_chksvc;
+
+		gfs_chk_new(&chk);				/* uuid should be assigned */
+		srand((int)time(NULL));
+		chk->uuid = rand();
+		sprintf(chk_name,"%llu",chk->uuid);
+		printf("uuid:%s\n", chk_name);
+		chk->chksvc = chksvc;
+		chk->chk_fd = ask_chksvc_open(chk, chk_name, file->oflags, file->mode);
+		gfs_list_push_back(fds[fd]->chunks, chk);
+		gfs_list_push_front(chksvc->chks, chk);
+	} else {
+		chk = (gfs_chk_t*)tmp->elem;
+		chksvc = chk->chksvc;
+		sprintf(chk_name,"%llu",chk->uuid);
+		printf("uuid:%s\n", chk_name);
 	}
-	chksvc = minp;
 
-	gfs_chk_new(&chk);				/* uuid should be assigned */
-	srand((int)time(NULL)); 
-	chk->uuid = rand();
-	sprintf(chk_name,"%llu",chk->uuid);
-	printf("uuid:%s\n", chk_name);
-	chk_fd = ask_chksvc_open(0, chk_name, O_CREAT | O_RDWR, 0644);
-	chk->chk_fd = chk_fd;
-	inet_aton(chksvc->ip, (struct in_addr*)&chk->chk_addr);
-	gfs_list_push_front(fds[fd]->chunks, chk);
-	gfs_list_push_front(chksvc->chks, chk);
-
-	sprintf(info->name, "%llu", chk->uuid);
-	strcpy(info->ip, inet_ntoa((struct in_addr){chk->chk_addr}));
+	strcpy(info->name, chk_name);
+	strcpy(info->ip, chksvc->ip);
 	info->fd = chk->chk_fd;
+
+	file->cur_chk = chk;
 
 	printf("on_clnt_newchk, name %s, ip %s, fd %d\n", info->name, info->ip, info->fd);
 	/* not implement */
@@ -350,13 +379,9 @@ int on_chk_reg(char *ip) {
 		fprintf(stderr, "on_chk_reg, reg ip(%s) failed\n", ip);
 		return -1;
 	}
-	gfs_list_push_back(chk_clnts, cl);
-
-	char *chksvc_ip = (char*)malloc(strlen(ip) + 1);
-	strcpy(chksvc_ip, ip);
 	gfs_chksvc_new(&chksvc);
-	strcpy(chksvc->ip, chksvc_ip);
-
+	strcpy(chksvc->ip, ip);
+	chksvc->chk_clnt = cl;
 	gfs_list_push_front(chk_svcs, chksvc);
 
 	return 0;

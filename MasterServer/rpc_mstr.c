@@ -1,4 +1,5 @@
 #include "gfs_rpc.h"
+#include "gfs_chk.h"
 #include "gfs_mstr_svc.h"
 
 
@@ -38,12 +39,12 @@ ask_chk_close_1(close_args *argp, CLIENT *clnt)
 
 
 int
-ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode) {
+ask_chksvc_open(gfs_chk_t *chk, const char *name, int oflags, mode_t mode) {
 	CLIENT *cl;
 	open_args args;
 	int *res;
 
-	cl = (CLIENT*)(gfs_list_get(chk_clnts, chk)->elem);
+	cl = chk->chksvc->chk_clnt;
 
 	args.path = (char*)malloc(strlen(name) + 1);
 	strcpy(args.path, name);
@@ -57,11 +58,11 @@ ask_chksvc_open(int chk, const char *name, int oflags, mode_t mode) {
 }
 
 int
-ask_chksvc_close(int chk, int fd) {
+ask_chksvc_close(gfs_chk_t *chk, int fd) {
 	CLIENT *cl;
 	close_args args;
 
-	cl = (CLIENT*)(gfs_list_get(chk_clnts, chk)->elem);
+	cl = chk->chksvc->chk_clnt;
 
 	args.fd = fd;
 
@@ -130,6 +131,7 @@ ask_mstr_newchk_1_svc(int *fd, struct svc_req *req) {
 		info.ip = (char*)malloc(16);
 	}
 
+	info.fd = -1;
 	on_clnt_newchk(*fd, &info);
 
 	return &info;

@@ -1,6 +1,7 @@
 #ifndef __FILE_H__
 #define __FILE_H__
 
+#include "gfs_chk.h"
 #include "gfs_filetree.h"
 #include <fcntl.h>
 
@@ -11,9 +12,14 @@
 
 
 typedef struct file_s {
-	char name[33]; /* with at most 32 byte length name */
-	int type; /* file type */
-	struct gfs_list_s *chunks;/* list of chunks here */
+	char 		name[33]; 	/* with at most 32 byte length name */
+	int 		type; 		/* file type */
+	struct gfs_list_s 	*chunks; 	/* list of chunks here */
+
+	/* attribute for opening file */
+	gfs_chk_t* 	cur_chk;
+	int 		oflags;
+	mode_t 		mode;
 } file_t;
 
 

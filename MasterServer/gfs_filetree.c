@@ -87,7 +87,7 @@ gfs_node_t* gfs_find_node_by_name(gfs_node_t *root, char *name) {
 
 file_t* gfs_get_file_by_path(gfs_node_t *root, const char *full_path) {
 	gfs_node_t* node = NULL;
-	int count,st;
+	int count, st;
 
 	node = root;
 	count = 0;
@@ -109,6 +109,7 @@ file_t* gfs_get_file_by_path(gfs_node_t *root, const char *full_path) {
 	}
 	char temp[33];
 	strncpy(temp, full_path + st, count - st);
+	temp[count - st] = 0;
 	node = gfs_find_node_by_name(node, temp);
 
 	printf("this is get_file_by_path node:%p\n", node);
@@ -145,7 +146,7 @@ gfs_node_t* gfs_get_node_by_path(gfs_node_t *root, const char *full_path){
 	return node;
 }
 
-void gfs_filetree_print(gfs_node_t *root){
+void gfs_filetree_print(gfs_node_t *root) {
 	printf("%s\n", root->file->name);
 	listnode_t *node;
 	node = gfs_list_findFirst(root->child);
