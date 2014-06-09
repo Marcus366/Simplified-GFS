@@ -102,3 +102,17 @@ ask_mstr_newchk_1(int *argp, CLIENT *clnt) {
 	}
 	return (&clnt_res);
 }
+
+chk_info*
+ask_mstr_nextchk_1(int *argp, CLIENT *clnt) {
+	static chk_info clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, ask_mstr_nextchk,
+		(xdrproc_t) xdr_int, (caddr_t) argp,
+		(xdrproc_t) xdr_chk_info, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}

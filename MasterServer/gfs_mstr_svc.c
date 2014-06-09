@@ -28,6 +28,7 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 		read_args ask_mstr_read_1_arg;
 		write_args ask_mstr_write_1_arg;
 		int ask_mstr_newchk_1_arg;
+		int ask_mstr_nextchk_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -66,6 +67,12 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_newchk_1_svc;
+		break;
+
+	case ask_mstr_nextchk:
+		_xdr_argument = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_nextchk_1_svc;
 		break;
 
 	default:
@@ -138,14 +145,12 @@ chk_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
 
 
 gfs_list_t *chk_svcs;
-gfs_list_t *chk_clnts;
 gfs_node_t *filetree_root;
 
 
 static void
 init_chk_svcs() {
 	gfs_list_init(&chk_svcs);
-	gfs_list_init(&chk_clnts);
 }
 
 static void
@@ -368,6 +373,41 @@ void on_clnt_newchk(int fd, chk_info *info) {
 	/* not implement */
 }
 
+
+void on_clnt_nextchk(int fd, chk_info *info) {
+	file_t *file;
+	gfs_chk_t *chk;
+	listnode_t *tmp;
+	char chk_name[65];
+
+	file = fds[fd];
+	if (file == NULL) {
+		return;
+	}
+
+	tmp = gfs_list_find(file->chunks, file->cur_chk);
+	chk = (gfs_chk_t*)tmp->elem;
+	ask_chksvc_close(chk, chk->chk_fd);
+	chk->chk_fd = -1;
+
+	tmp = tmp->next;
+	if (tmp == NULL) {
+		file->cur_chk = NULL;
+		return;
+	}
+
+	chk = (gfs_chk_t*)tmp->elem;
+	sprintf(chk_name,"%llu",chk->uuid);
+	chk->chk_fd = ask_chksvc_open(chk, chk_name, file->oflags, file->mode);
+
+	strcpy(info->name, chk_name);
+	strcpy(info->ip, chk->chksvc->ip);
+	info->fd = chk->chk_fd;
+
+	file->cur_chk = chk;
+
+	return;
+}
 
 int on_chk_reg(char *ip) {
 	CLIENT *cl;

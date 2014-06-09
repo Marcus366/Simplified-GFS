@@ -25,6 +25,7 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		read_args ask_mstr_read_1_arg;
 		write_args ask_mstr_write_1_arg;
 		int ask_mstr_newchk_1_arg;
+		int ask_mstr_nextchk_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -63,6 +64,12 @@ clnt_mstr_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_chk_info;
 		local = (char *(*)(char *, struct svc_req *)) ask_mstr_newchk_1_svc;
+		break;
+
+	case ask_mstr_nextchk:
+		_xdr_argument = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_chk_info;
+		local = (char *(*)(char *, struct svc_req *)) ask_mstr_nextchk_1_svc;
 		break;
 
 	default:

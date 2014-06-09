@@ -37,6 +37,7 @@ program CLNT_MSTR_PROG {
 		chk_info ask_mstr_read(read_args)	= 3;
 		chk_info ask_mstr_write(write_args)	= 4;
 		chk_info ask_mstr_newchk(int)		= 5;
+		chk_info ask_mstr_nextchk(int)		= 6;
 	} = 1;
 } = 0x31230000;
 

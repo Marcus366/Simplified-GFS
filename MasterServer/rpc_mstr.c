@@ -137,6 +137,24 @@ ask_mstr_newchk_1_svc(int *fd, struct svc_req *req) {
 	return &info;
 }
 
+
+chk_info*
+ask_mstr_nextchk_1_svc(int *fd, struct svc_req *req) {
+	static chk_info info = {NULL, NULL, 0};
+	if (info.name == NULL) {
+		info.name = (char*)malloc(65);
+	}
+	if (info.ip == NULL) {
+		info.ip = (char*)malloc(16);
+	}
+
+	info.fd = -1;
+	on_clnt_nextchk(*fd, &info);
+
+	return &info;
+}
+
+
 int*
 reg_chk_1_svc(char **arg, struct svc_req *req) {
 	static int res = 0;

@@ -19,6 +19,7 @@ extern int on_clnt_close(int fd);
 extern void on_clnt_read(int fd, chk_info *info);
 extern void on_clnt_write(int fd, chk_info *info);
 extern void on_clnt_newchk(int fd, chk_info *info);
+extern void on_clnt_nextchk(int fd, chk_info *info);
 
 extern int on_chk_reg(char* ip);
 extern int on_chk_unreg(char* ip);

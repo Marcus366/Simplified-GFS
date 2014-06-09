@@ -71,6 +71,9 @@ extern  chk_info * ask_mstr_write_1_svc(write_args *, struct svc_req *);
 #define ask_mstr_newchk 5
 extern  chk_info * ask_mstr_newchk_1(int *, CLIENT *);
 extern  chk_info * ask_mstr_newchk_1_svc(int *, struct svc_req *);
+#define ask_mstr_nextchk 6
+extern  chk_info * ask_mstr_nextchk_1(int *, CLIENT *);
+extern  chk_info * ask_mstr_nextchk_1_svc(int *, struct svc_req *);
 extern int clnt_mstr_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -89,6 +92,9 @@ extern  chk_info * ask_mstr_write_1_svc();
 #define ask_mstr_newchk 5
 extern  chk_info * ask_mstr_newchk_1();
 extern  chk_info * ask_mstr_newchk_1_svc();
+#define ask_mstr_nextchk 6
+extern  chk_info * ask_mstr_nextchk_1();
+extern  chk_info * ask_mstr_nextchk_1_svc();
 extern int clnt_mstr_prog_1_freeresult ();
 #endif /* K&R C */
 
