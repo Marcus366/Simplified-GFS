@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+extern int init(const char* mstr_ip);
 
 extern int gfs_open(const char *path, int oflags, mode_t mode);
 

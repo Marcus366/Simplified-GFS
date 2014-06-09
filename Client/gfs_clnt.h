@@ -3,7 +3,6 @@
 
 
 extern CLIENT *mstr_clnt;
-extern CLIENT *chk_clnt;
 
 
 #endif

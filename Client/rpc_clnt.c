@@ -18,6 +18,7 @@ ask_mstr_open_1(open_args *argp, CLIENT *clnt) {
 	return (&clnt_res);
 }
 
+
 int*
 ask_mstr_close_1(close_args *argp, CLIENT *clnt) {
 	static int clnt_res;
@@ -32,6 +33,7 @@ ask_mstr_close_1(close_args *argp, CLIENT *clnt) {
 	return (&clnt_res);
 }
 
+
 chk_info*
 ask_mstr_read_1(read_args *argp, CLIENT *clnt) {
 	static chk_info clnt_res;
@@ -45,6 +47,7 @@ ask_mstr_read_1(read_args *argp, CLIENT *clnt) {
 	}
 	return (&clnt_res);
 }
+
 
 chk_info*
 ask_mstr_write_1(write_args *argp, CLIENT *clnt) {
@@ -61,6 +64,7 @@ ask_mstr_write_1(write_args *argp, CLIENT *clnt) {
 	return (&clnt_res);
 }
 
+
 int*
 ask_chk_write_1(write_args *argp, CLIENT *clnt) {
 	static int clnt_res;
@@ -74,6 +78,7 @@ ask_chk_write_1(write_args *argp, CLIENT *clnt) {
 	}
 	return (&clnt_res);
 }
+
 
 read_res*
 ask_chk_read_1(read_args *argp, CLIENT *clnt) {
@@ -89,6 +94,7 @@ ask_chk_read_1(read_args *argp, CLIENT *clnt) {
 	return (&clnt_res);
 }
 
+
 chk_info*
 ask_mstr_newchk_1(int *argp, CLIENT *clnt) {
 	static chk_info clnt_res;
@@ -102,6 +108,7 @@ ask_mstr_newchk_1(int *argp, CLIENT *clnt) {
 	}
 	return (&clnt_res);
 }
+
 
 chk_info*
 ask_mstr_nextchk_1(int *argp, CLIENT *clnt) {

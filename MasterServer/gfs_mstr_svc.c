@@ -310,7 +310,6 @@ void on_clnt_write(int fd, chk_info *info) {
 	file_t* file;
 	gfs_chk_t *chk;
 
-	printf("on_clnt_write fd: %d\n", fd);
 	file = fds[fd];
 	chk = file->cur_chk;
 
@@ -418,6 +417,7 @@ void on_clnt_nextchk(int fd, chk_info *info) {
 	return;
 }
 
+
 int on_chk_reg(char *ip) {
 	CLIENT *cl;
 	gfs_chksvc_t *chksvc;
@@ -435,6 +435,7 @@ int on_chk_reg(char *ip) {
 
 	return 0;
 }
+
 
 int on_chk_unreg(char *ip) {
 	/* not implement */

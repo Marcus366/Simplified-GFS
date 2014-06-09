@@ -159,8 +159,7 @@ int*
 reg_chk_1_svc(char **arg, struct svc_req *req) {
 	static int res = 0;
 
-	printf("remote chk register, ip: %s\n", *arg);
-	on_chk_reg(*arg);
+	res = on_chk_reg(*arg);
 
 	return &res;
 }
@@ -170,7 +169,7 @@ int*
 unreg_chk_1_svc(char **arg, struct svc_req *req) {
 	static int res = 0;
 
-	on_chk_unreg(*arg);
+	res = on_chk_unreg(*arg);
 
 	return &res;
 }

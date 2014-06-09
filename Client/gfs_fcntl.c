@@ -82,7 +82,7 @@ repeat:	//printf("gfs_read, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo
 			fprintf(stderr, "ask_mstr_nextchk return NULL\n");
 			exit(-1);
 		}
-		if (pinfo->fd != -1) {
+		if (pinfo->fd != -1 && count - res->ssize > 0) {
 			buf += res->ssize;
 			count -= res->ssize;
 

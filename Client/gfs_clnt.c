@@ -5,14 +5,11 @@
 
 
 CLIENT *mstr_clnt;
-CLIENT *chk_clnt;
 
-
-static int init_clnt(const char*);
 
 int
 main(int argc, char **argv) {
-	int fd = 75484;
+	int fd;
 	char c, buf[256];
 
 	if (argc != 2) {
@@ -20,7 +17,7 @@ main(int argc, char **argv) {
 		exit(-1);
 	}
 
-	if (init_clnt(argv[1]) == -1) {
+	if (init(argv[1]) == -1) {
 		perror("clnt_create error");
 		return -1;
 	}
@@ -60,7 +57,7 @@ main(int argc, char **argv) {
 }
 
 
-int init_clnt(const char *ip) {
+int init(const char *ip) {
 	mstr_clnt = clnt_create(ip, CLNT_MSTR_PROG, VERSION, "tcp");
 	if (mstr_clnt == NULL) {
 		return -1;
