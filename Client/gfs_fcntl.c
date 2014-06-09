@@ -77,7 +77,7 @@ repeat:	//printf("gfs_read, chk_info: %s %s %d\n", pinfo->name, pinfo->ip, pinfo
 	if (res->ssize > 0) {
 		memcpy(buf, res->buf, res->ssize);
 	} else {
-		pinfo = ask_mstr_next_chk_1(&fd, mstr_clnt);
+		pinfo = ask_mstr_nextchk_1(&fd, mstr_clnt);
 		if (pinfo == NULL) {
 			fprintf(stderr, "ask_mstr_nextchk return NULL\n");
 			exit(-1);

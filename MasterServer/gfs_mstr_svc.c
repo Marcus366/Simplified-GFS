@@ -385,17 +385,17 @@ void on_clnt_nextchk(int fd, chk_info *info) {
 		return;
 	}
 
+
 	tmp = gfs_list_find(file->chunks, file->cur_chk);
+	if (tmp->next == NULL) {
+		return;
+	}
+
 	chk = (gfs_chk_t*)tmp->elem;
 	ask_chksvc_close(chk, chk->chk_fd);
 	chk->chk_fd = -1;
 
 	tmp = tmp->next;
-	if (tmp == NULL) {
-		file->cur_chk = NULL;
-		return;
-	}
-
 	chk = (gfs_chk_t*)tmp->elem;
 	sprintf(chk_name,"%llu",chk->uuid);
 	chk->chk_fd = ask_chksvc_open(chk, chk_name, file->oflags, file->mode);
