@@ -6,7 +6,7 @@
 
 CLIENT *mstr_clnt;
 
-
+/*
 int
 main(int argc, char **argv) {
 	int fd;
@@ -54,7 +54,7 @@ main(int argc, char **argv) {
 		}
 	}
 	return (0);
-}
+}*/
 
 
 int init(const char *ip) {

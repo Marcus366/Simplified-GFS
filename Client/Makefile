@@ -14,7 +14,10 @@ rpc_clnt.o: rpc_clnt.c ../rpc/gfs_rpc.h
 	$(CC) $(CFLAGS) -c $<
 
 
-.PHONY: clean
+.PHONY: clean test
+
+test: ../test/write_file_test.c $(OBJS)
+	$(CC) $(FLAGS) ../test/write_file_test.c $(OBJS) -o ../test/write_file_test
 
 clean:
 	rm client
