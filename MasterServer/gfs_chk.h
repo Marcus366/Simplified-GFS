@@ -12,11 +12,13 @@ typedef struct gfs_chk_s {
 	int	 		chk_fd;		/* chunk server fd if opened,  -1 otherwise	*/
 } gfs_chk_t;
 
+
 typedef struct gfs_chksvc_s {
 	char ip[16]; 		/* ip address */
 	CLIENT *chk_clnt; 	/* a connection between master and chunk server */
 	gfs_list_t *chks;
 } gfs_chksvc_t;
+
 
 extern void gfs_chk_new(gfs_chk_t **chk);
 extern void gfs_chk_free(gfs_chk_t **chk);

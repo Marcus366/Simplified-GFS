@@ -11,10 +11,13 @@ int fd_count;
 
 void file_new(file_t **file, const char* name, int type) {
 	*file = (file_t*)malloc(sizeof(file_t));
+
 	(*file)->type = type;
-	gfs_list_init(&((*file)->chunks));
+
 	strncpy((*file)->name, name, 32);
 	((*file)->name)[33] = 0;
+
+	gfs_list_init(&((*file)->chunks));
 }
 
 
@@ -54,7 +57,7 @@ file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t *root) {
 	}
 	strncpy(temp, path + st, count - st );
 	temp[count - st] = '\0';
-	printf("path:%s temp:%s st:%d count:%d\n", path, temp, st, count);
+	//printf("path:%s temp:%s st:%d count:%d\n", path, temp, st, count);
 	file_new(&file, temp, type);
 	gfs_create_node(&node, father, file);
 	return file;

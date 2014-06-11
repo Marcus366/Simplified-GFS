@@ -26,14 +26,14 @@ typedef struct file_s {
 extern file_t *fds[MAX_FILE_SIZE];			
 extern int fd_count;
 
-extern void file_new(file_t **file, const char* name, int type);
-extern void file_free(file_t **file);
+extern void 	file_new(file_t **file, const char* name, int type);
+extern void 	file_free(file_t **file);
 
 /* create a file and add it to the filetree */
-extern file_t *file_create(const char *path, mode_t mode, int type, gfs_node_t* root);
+extern file_t*	file_create(const char *path, mode_t mode, int type, gfs_node_t* root);
 
 /* return 1 when equal, 0 when not equal. */
-extern int file_equal(file_t* ,file_t* );
+extern int 	file_equal(file_t *lhs, file_t* rhs);
 
 
 #endif

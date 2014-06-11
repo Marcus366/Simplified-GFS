@@ -153,12 +153,14 @@ init_chk_svcs() {
 	gfs_list_init(&chk_svcs);
 }
 
+
 static void
 init_filetree_root() {
 	file_t *file;
 	file_new(&file, "root", FILE_TYPE_FILE);
 	gfs_create_node(&filetree_root, NULL, file);
 }
+
 
 static void
 init_fds() {
@@ -360,7 +362,6 @@ void on_clnt_newchk(int fd, chk_info *info) {
 		gfs_chk_new(&chk);				/* uuid should be assigned */
 		chk->uuid = rand();
 		sprintf(chk_name,"%llu",chk->uuid);
-		printf("uuid:%s\n", chk_name);
 		chk->chksvc = chksvc;
 		chk->chk_fd = ask_chksvc_open(chk, chk_name, file->oflags, file->mode);
 		gfs_list_push_back(fds[fd]->chunks, chk);
@@ -369,7 +370,6 @@ void on_clnt_newchk(int fd, chk_info *info) {
 		chk = (gfs_chk_t*)tmp->elem;
 		chksvc = chk->chksvc;
 		sprintf(chk_name,"%llu",chk->uuid);
-		printf("uuid:%s\n", chk_name);
 	}
 
 	strcpy(info->name, chk_name);
