@@ -6,7 +6,7 @@
 
 int
 main(int argc, char **argv) {
-	int fd;
+	int remote_fd;
 	char buf[256];
 	ssize_t nbytes;
 
@@ -17,17 +17,17 @@ main(int argc, char **argv) {
 
 	gfs_init(argv[1]);
 
-	fd = gfs_open("write_test", O_CREAT | O_RDWR, 0644);
-	if (fd <= 0) {
-		fprintf(stderr, "open file error, fd:%d\n", fd);
+	remote_fd = gfs_open("write_console_test", O_CREAT | O_RDWR, 0644);
+	if (remote_fd <= 0) {
+		fprintf(stderr, "open file error, fd:%d\n", local_fd);
 		exit(-1);
 	}
 
-	while ((nbytes = gfs_read(fd, buf, 256)) > 0) {
-		write(1, buf, nbytes);
+	while ((nbytes = read(stdin, buf, 256)) > 0) {
+		gfs_write(remote_fd, buf, nbytes);
 	}
 
-	gfs_close(fd);
+	gfs_close(remote_fd);
 
 	exit(0);
 }

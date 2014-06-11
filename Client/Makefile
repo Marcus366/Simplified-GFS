@@ -15,10 +15,13 @@ rpc_clnt.o: rpc_clnt.c ../rpc/gfs_rpc.h
 
 .PHONY: all clean test
 
-test: write_file_test read_console_test
+test: write_file_test read_console_test write_console_test
 
 write_file_test: ../test/write_file_test.c $(OBJS)
 	$(CC) $(FLAGS) $< $(OBJS) -o ../test/write_file_test
+
+write_console_test: ../test/write_console_test.c $(OBJS)
+	$(CC) $(FLAGS) $< $(OBJS) -o ../test/write_console_test
 
 read_console_test: ../test/read_console_test.c $(OBJS)
 	$(CC) $(FLAGS) $< $(OBJS) -o ../test/read_console_test

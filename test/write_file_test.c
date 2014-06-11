@@ -21,7 +21,7 @@ main(int argc, char **argv) {
 		exit(-1);
 	}
 
-	init(argv[1]);
+	gfs_init(argv[1]);
 
 	remote_fd = gfs_open("write_test", O_CREAT | O_RDWR, 0644);
 	if (local_fd <= 0) {
