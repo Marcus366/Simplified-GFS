@@ -129,7 +129,9 @@ repeat:
 		fprintf(stderr, "ask_chk_write_1 return NULL");
 		free(args.buf);
 		exit(-1);
-	} else if (*res < nbytes) {
+	}
+	printf("gfs_write %u bytes, but actually %d bytes\n", nbytes, *res);
+	if (*res < nbytes) {
 		buf 	= buf + *res;
 		nbytes 	= nbytes - *res;
 		pinfo = ask_mstr_newchk_1(&fd, mstr_clnt);

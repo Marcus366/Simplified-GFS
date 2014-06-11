@@ -218,6 +218,9 @@ main (int argc, char **argv) {
 
 
 int on_clnt_open(const char *path, int oflags, mode_t mode) {
+	/* just for test and will be removed srand later */
+	srand((int)time(NULL));
+
 	file_t *file;
 	int gfs_fd, chk_fd;
 	gfs_chk_t *chk;
@@ -227,7 +230,6 @@ int on_clnt_open(const char *path, int oflags, mode_t mode) {
 	if (file == NULL && (oflags & O_CREAT)) {
 		file = file_create(path, mode, FILE_TYPE_FILE, filetree_root);
 		gfs_chk_new(&chk);
-		srand((int)time(NULL));
 		chk->uuid = rand();
 
 		gfs_chksvc_t *chksvc;
@@ -356,7 +358,6 @@ void on_clnt_newchk(int fd, chk_info *info) {
 		chksvc = min_chksvc;
 
 		gfs_chk_new(&chk);				/* uuid should be assigned */
-		srand((int)time(NULL));
 		chk->uuid = rand();
 		sprintf(chk_name,"%llu",chk->uuid);
 		printf("uuid:%s\n", chk_name);

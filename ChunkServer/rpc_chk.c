@@ -7,6 +7,18 @@
 
 static struct timeval TIMEOUT = { 25, 0 };
 
+static ssize_t Write(int fd, void* buf, size_t nbytes) {
+	ssize_t count, res;
+
+	res = nbytes;
+	while ((count = write(fd, buf, nbytes)) < nbytes) {
+		buf 	+= count;
+		nbytes 	-= count;
+	}
+
+	return res;
+}
+
 
 int*
 reg_chk_1(char **argp, CLIENT *clnt) {
@@ -73,9 +85,9 @@ ask_chk_write_1_svc(write_args *args, struct svc_req *req) {
 
 	printf("ask_chk_write_svc: chk_size %ld\n", file_stat.st_size);
 	if (args->nbytes + file_stat.st_size < CHK_SIZE) {
-		res = write(args->fd, args->buf, args->nbytes);
+		res = Write(args->fd, args->buf, args->nbytes);
 	} else {
-		res = write(args->fd, args->buf, CHK_SIZE - file_stat.st_size);
+		res = Write(args->fd, args->buf, CHK_SIZE - file_stat.st_size);
 	}
 
 	return &res;

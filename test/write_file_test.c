@@ -30,7 +30,7 @@ main(int argc, char **argv) {
 	}
 
 	while ((nbytes = read(local_fd, buf, 256)) > 0) {
-		gfs_write(remote_fd, buf, 256);
+		gfs_write(remote_fd, buf, nbytes);
 	}
 
 	close(local_fd);
