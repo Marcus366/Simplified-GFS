@@ -19,11 +19,11 @@ main(int argc, char **argv) {
 
 	remote_fd = gfs_open("write_console_test", O_CREAT | O_RDWR, 0644);
 	if (remote_fd <= 0) {
-		fprintf(stderr, "open file error, fd:%d\n", local_fd);
+		fprintf(stderr, "open file error, fd:%d\n", remote_fd);
 		exit(-1);
 	}
 
-	while ((nbytes = read(stdin, buf, 256)) > 0) {
+	while ((nbytes = read(1, buf, 256)) > 0) {
 		gfs_write(remote_fd, buf, nbytes);
 	}
 

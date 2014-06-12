@@ -57,7 +57,7 @@ main(int argc, char **argv) {
 }*/
 
 
-int init(const char *ip) {
+int gfs_init(const char *ip) {
 	mstr_clnt = clnt_create(ip, CLNT_MSTR_PROG, VERSION, "tcp");
 	if (mstr_clnt == NULL) {
 		return -1;
