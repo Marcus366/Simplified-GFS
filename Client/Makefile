@@ -1,6 +1,6 @@
-CC = gcc
-CFLAGS = -Wall $(INCLUDE)
-INCLUDE = -I../include -I../rpc
+CC=g++
+CFLAGS=-Wall $(INCLUDE)
+INCLUDE=-I../include -I../rpc
 
 OBJS =gfs_clnt.o gfs_fcntl.o rpc_clnt.o ../rpc/gfs_rpc_xdr.o
 

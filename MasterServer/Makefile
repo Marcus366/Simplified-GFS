@@ -1,12 +1,16 @@
-CC =gcc
-CFLAGS =-Wall $(INCLUDE)
-INCLUDE =-I../include -I../rpc
+CC=g++
+CFLAGS=-Wall $(INCLUDE)
+INCLUDE=-I../Common/Thrift/gen-cpp
 
-OBJS =gfs_mstr_svc.o rpc_mstr.o gfs_list.o file.o gfs_chk.o gfs_filetree.o ../rpc/gfs_rpc_xdr.o
+GENCPP=../Common/Thrift/gen-cpp
+OBJS=main.o ChunkServer.o $(GENCPP)/ChunkServerManager.o $(GENCPP)/Chunk2Master_constants.o $(GENCPP)/Chunk2Master_types.o
 
-%o: %c
+%o: %cpp
 	$(CC) $(CFLAGS) -c $<
 
+mstr: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $ mstr -lthrift
 
-mstr: $(OBJS) ../include/gfs.h ../rpc/gfs_rpc.h
-	$(CC) $(CFLAGS) $(OBJS) -o $ mstr
+main.o: main.cpp ChunkServerManager_server.hpp
+	$(CC) $(CFLAGS) -c $<
+
