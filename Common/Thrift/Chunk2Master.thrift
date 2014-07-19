@@ -7,10 +7,10 @@ struct ChunkServerInfo {
 4: list<i16>  availPort;
 }
 
-service ChunkServerManager extends shared.SharedService {
-	bool register(1:string ipAddr, 2:i16 availPort),
+service ChunkServerManager {
+	bool registerChunkServer(1:string ipAddr, 2:i64 availMem);
 
-	oneway void unregister(1:string ipAddr),
+	oneway void unregisterChunkServer(1:string ipAddr),
 
 	bool heartBeat(1:ChunkServerInfo info)
 }

@@ -11,7 +11,7 @@ struct FileInfo {
 3: i32		fd;
 }
 
-service FileOpManager extends shared.SharedService {
+service FileOpManager {
 	i32 open(1:string path, 2:i32 oflag, 3:i32 mode),
 
 	i32 close(1:i32 fd),

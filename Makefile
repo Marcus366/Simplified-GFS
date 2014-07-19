@@ -1,7 +1,7 @@
 .PHONY : all clean
 
 all:
-	(cd rpc && make)
+	(cd Common && make)
 	(cd MasterServer && make)
 	(cd ChunkServer && make)
 	(cd Client && make)
