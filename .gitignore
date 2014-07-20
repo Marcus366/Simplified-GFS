@@ -1,4 +1,5 @@
 *.o
+*.swp
 fetch.sh
 .DS_Store
 tags
