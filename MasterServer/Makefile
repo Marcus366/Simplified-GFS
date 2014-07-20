@@ -1,17 +1,18 @@
 CC=g++
 CFLAGS=-Wall $(INCLUDE)
-INCLUDE=-I../Common/Thrift/Chunk2Master/gen-cpp
+GENCPP=../Common/Thrift/gen-cpp
+INCLUDE=-I$(GENCPP)
 
-CHUNK2MASTER=../Common/Thrift/Chunk2Master/gen-cpp
-OBJS=main.o ChunkServer.o $(CHUNK2MASTER)/ChunkServerManager.o \
-$(CHUNK2MASTER)/Chunk2Master_constants.o $(CHUNK2MASTER)/Chunk2Master_types.o
+OBJS=MasterServer_main.o ChunkServer.o ChunkServerList.o \
+File.o Namespace.o \
+$(GENCPP)/MasterServer.o $(GENCPP)/MasterServer_constants.o \
+$(GENCPP)/MasterServer_types.o
+
+.PHONY: gen
 
 %o: %cpp
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 mstr: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o mstr -lthrift
-
-main.o: main.cpp ChunkServerManager_server.hpp
-	$(CC) $(CFLAGS) -c $<
 

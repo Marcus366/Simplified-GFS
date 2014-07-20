@@ -33,20 +33,6 @@ class ChunkServer {
   ChunkServer *prev, *next;
 };
 
-class ChunkServerList {
- public:
-  ChunkServerList();
-
-  void pushFront(ChunkServer *svc);
-  void pushBack(ChunkServer *svc);
-
- private:
-  int size;
-  ChunkServer *dummy;
-
-  static void listLink(ChunkServer *prev, ChunkServer *cur, ChunkServer *next);
-};
-
 } //namespace GFS
 
 #endif //__CHUNK_SERVER_H__

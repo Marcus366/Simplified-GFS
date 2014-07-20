@@ -1,15 +1,19 @@
 CC=g++
 CFLAGS=-Wall $(INCLUDE)
-INCLUDE=-I../include
-OBJS=gfs_chk_svc.o rpc_chk.o ../rpc/gfs_rpc_xdr.o
+INCLUDE=
+OBJS=ChunkServer_main.o ../MasterServer/gen-cpp/MasterServer.o \
+../MasterServer/gen-cpp/MasterServer_constants.o \
+../MasterServer/gen-cpp/MasterServer_types.o
 
-%o: %c
+
+%o: %cpp
 	$(CC) $(CFLAGS) -c $<
 
-chk: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ -lpthread
+ChunkServer: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ -lpthread -lthrift
 
 .PHONY: clean
 
 clean:
-	rm chk
+	rm ChunkServer
+
