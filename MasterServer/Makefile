@@ -1,12 +1,12 @@
 CC=g++
-CFLAGS=-Wall $(INCLUDE)
+CFLAGS=-Wall $(INCLUDE) -std=c++11
 GENCPP=../Common/Thrift/gen-cpp
 INCLUDE=-I$(GENCPP)
 
-OBJS=MasterServer_main.o ChunkServer.o ChunkServerList.o \
+OBJS=ChunkServer.o ChunkServerList.o \
 File.o Namespace.o \
 $(GENCPP)/MasterServer.o $(GENCPP)/MasterServer_constants.o \
-$(GENCPP)/MasterServer_types.o
+$(GENCPP)/MasterServer_types.o MasterServer_main.o
 
 .PHONY: gen
 
@@ -14,5 +14,5 @@ $(GENCPP)/MasterServer_types.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 mstr: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o mstr -lthrift
+	$(CC) $(CFLAGS) $(OBJS) -o MasterServer -lthrift
 

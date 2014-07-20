@@ -23,13 +23,13 @@ class Archives : public File {
 
 class Directory : public File {
  public:
-  Archives(const std::string &name);
+  Directory(const std::string &name);
   virtual ~Directory();
 
   File* createNewFile(const std::string& name);
  
  private:
-  set<File*> children;
+  std::set<File*> children;
 };
 
 } //namespace GFS

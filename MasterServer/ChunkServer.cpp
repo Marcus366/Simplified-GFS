@@ -30,23 +30,3 @@ int ChunkServer::getPort(unsigned int index) const
   return this->port[index];
 }
 
-void ChunkServer::setPrev(ChunkServer *svc)
-{
-  this->prev = svc;
-}
-
-void ChunkServer::setNext(ChunkServer *svc)
-{
-  this->next = svc;
-}
-
-ChunkServer* ChunkServer::getPrev() const
-{
-  return this->prev;
-}
-
-ChunkServer* ChunkServer::getNext() const
-{
-  return this->next;
-}
-

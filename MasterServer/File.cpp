@@ -13,6 +13,7 @@ File::~File()
 }
 
 Archives::Archives(const string &name)
+:File(name)
 {
 }
 
@@ -21,6 +22,7 @@ Archives::~Archives()
 }
 
 Directory::Directory(const string &name)
+:File(name)
 {
 }
 
@@ -30,7 +32,7 @@ Directory::~Directory()
 
 File* Directory::createNewFile(const string &name)
 {
-  Archive *f = new Archives(name);
+  Archives *f = new Archives(name);
   children.insert(f);
   return f;
 }

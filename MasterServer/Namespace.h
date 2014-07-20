@@ -13,7 +13,7 @@ class Namespace {
   Namespace();
   ~Namespace();
 
-  File* findFineByPath(const std::string& path);
+  File* findFileByPath(const std::string& path);
   File* createNewFile(const std::string& path);
 
  private:

@@ -9,6 +9,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include <unistd.h>
+#include <fcntl.h>
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -30,7 +31,7 @@ class MasterServerHandler : virtual public MasterServerIf {
 
   bool registerChunkServer(const std::string& ipAddr, const int64_t availMem) {
     ChunkServer *svc = new ChunkServer(ipAddr, availMem);
-    chunkServers.pushFront(svc);
+    chunkServers.insert(svc);
     printf("registerChunkServer\n");
     return true;
   }

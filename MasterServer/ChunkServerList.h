@@ -1,6 +1,7 @@
 #ifndef __CHUNK_SERVER_LIST_H__
 #define __CHUNK_SERVER_LIST_H__
 
+#include <unordered_map>
 
 namespace GFS {
 
@@ -10,18 +11,11 @@ class ChunkServerList {
  public:
   ChunkServerList();
 
-  void pushFront(ChunkServer *svc);
-  void pushBack(ChunkServer *svc);
-
-  void What(ChunkServer *svc) {
-    ; //do nothing
-  }
+  void insert(ChunkServer *svc);
 
  private:
-  int size;
-  ChunkServer *dummy;
+  std::unordered_map<std::string, ChunkServer*> maps;
 
-  static void listLink(ChunkServer *prev, ChunkServer *cur, ChunkServer *next);
 };
 
 } //namespace GFS
