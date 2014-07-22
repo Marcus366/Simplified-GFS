@@ -14,10 +14,11 @@ class Namespace {
   ~Namespace();
 
   File* findFileByPath(const std::string& path);
-  File* createNewFile(const std::string& path);
+  File* createNewFile(const std::string& path, mode_t mode);
 
+  Directory* createDirectory(const std::string& path, mode_t mode);
  private:
-  File *root;
+  Directory *root;
 };
 
 } //namespace GFS

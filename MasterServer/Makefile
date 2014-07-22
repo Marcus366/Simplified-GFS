@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall $(INCLUDE) -std=c++11
 GENCPP=../Common/Thrift/gen-cpp
-INCLUDE=-I$(GENCPP)
+INCLUDE=-I$(GENCPP) -I../Common
 
 OBJS=ChunkServer.o ChunkServerList.o \
 File.o Namespace.o \

@@ -1,3 +1,4 @@
+#include "Macros.h"
 #include "ChunkServer.h"
 #include "ChunkServerList.h"
 #include "MasterServer.h"
@@ -11,12 +12,15 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <bitset>
+
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
+using std::bitset;
 
 using namespace  ::GFS;
 
@@ -25,6 +29,7 @@ class MasterServerHandler : virtual public MasterServerIf {
   static ChunkServerList chunkServers;
   static Namespace       root;
 
+  static bitset<1024>    fds;
  public:
   MasterServerHandler() {
   }
@@ -48,11 +53,15 @@ class MasterServerHandler : virtual public MasterServerIf {
   }
 
   int32_t open(const std::string& path, const int32_t oflag, const int32_t mode) {
+    File *file = NULL;
     if (mode & O_CREAT) {
-      root.createNewFile(path);
+      file = root.createNewFile(path, mode);
+    } else {
+      file = root.findFileByPath(path);
     }
+    UNUSED(file);
     printf("open\n");
-    return 0;
+    return getFD();
   }
 
   int32_t close(const int32_t fd) {
@@ -66,10 +75,24 @@ class MasterServerHandler : virtual public MasterServerIf {
     printf("askNewChunk\n");
   }
 
+ private:
+  int getFD() {
+    int fd = 0;
+    while (fd < 1024 && !fds.test(fd)) {
+      ++fd;
+    }
+    if (fd < 1024) {
+      fds.set(fd);
+    } else {
+      fd = -1;
+    }
+    return fd;
+  }
 };
 
 ChunkServerList MasterServerHandler::chunkServers;
 Namespace       MasterServerHandler::root;
+bitset<1024>    MasterServerHandler::fds;
 
 int main(int argc, char **argv) {
   int port = 9090;

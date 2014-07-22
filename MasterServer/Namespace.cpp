@@ -5,7 +5,7 @@ using namespace ::std;
 
 Namespace::Namespace()
 {
-  root = new Directory("/");
+  root = new Directory("/", 0);
 }
 
 Namespace::~Namespace()
@@ -15,29 +15,13 @@ Namespace::~Namespace()
 
 File* Namespace::findFileByPath(const string& path)
 {
-  return root;
+  //TODO: Here should add some code checking the path whether is legal.
+  return root->recursiveFindFile(path);
 }
 
-File* Namespace::createNewFile(const string& path)
+File* Namespace::createNewFile(const string& path, mode_t mode)
 {
-  size_t cut = path.rfind('/');
-  string prefix = path.substr(0, cut);
-  string suffix = path.substr(cut);
-  File *f;
-  Directory *d;
-
-  if (cut == string::npos) {
-    goto fail;
-  }
-  
-  f = findFileByPath(prefix);
-  d = dynamic_cast<Directory*>(f);
-  if (d == NULL) {
-    goto fail;
-  }
-  return d->createNewFile(suffix);
-  
-fail:
-  return NULL;
+  //TODO: Here should add some code checking the path whether is legal.
+  return root->recursiveCreateFile(path, mode);
 }
 
