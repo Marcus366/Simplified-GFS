@@ -84,57 +84,6 @@ class ChunkServerInfo {
 
 void swap(ChunkServerInfo &a, ChunkServerInfo &b);
 
-typedef struct _ReadResult__isset {
-  _ReadResult__isset() : buf(false), count(false) {}
-  bool buf;
-  bool count;
-} _ReadResult__isset;
-
-class ReadResult {
- public:
-
-  static const char* ascii_fingerprint; // = "1CCCF6FC31CFD1D61BBBB1BAF3590620";
-  static const uint8_t binary_fingerprint[16]; // = {0x1C,0xCC,0xF6,0xFC,0x31,0xCF,0xD1,0xD6,0x1B,0xBB,0xB1,0xBA,0xF3,0x59,0x06,0x20};
-
-  ReadResult() : buf(), count(0) {
-  }
-
-  virtual ~ReadResult() throw() {}
-
-  std::string buf;
-  int64_t count;
-
-  _ReadResult__isset __isset;
-
-  void __set_buf(const std::string& val) {
-    buf = val;
-  }
-
-  void __set_count(const int64_t val) {
-    count = val;
-  }
-
-  bool operator == (const ReadResult & rhs) const
-  {
-    if (!(buf == rhs.buf))
-      return false;
-    if (!(count == rhs.count))
-      return false;
-    return true;
-  }
-  bool operator != (const ReadResult &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const ReadResult & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-void swap(ReadResult &a, ReadResult &b);
-
 typedef struct _FileInfo__isset {
   _FileInfo__isset() : ipAddr(false), uuid(false), fd(false) {}
   bool ipAddr;
