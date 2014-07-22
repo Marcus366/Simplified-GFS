@@ -1,6 +1,10 @@
 *.o
+*.swp
 fetch.sh
 .DS_Store
 tags
 .tags
 .tags_sorted_by_file
+MasterServer/MasterServer
+ChunkServer/ChunkServer
+

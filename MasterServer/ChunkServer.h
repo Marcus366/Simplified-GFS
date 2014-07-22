@@ -20,31 +20,11 @@ class ChunkServer {
   void addPort(int port);
   int  getPort(unsigned int index = 0) const;
 
-  void setPrev(ChunkServer *svc);
-  void setNext(ChunkServer *svc);
-  ChunkServer *getPrev() const;
-  ChunkServer *getNext() const;
-
  private:
   int64_t totalMem, availMem;
   std::string ipAddr;
   std::vector<int> port;
 
-  ChunkServer *prev, *next;
-};
-
-class ChunkServerList {
- public:
-  ChunkServerList();
-
-  void pushFront(ChunkServer *svc);
-  void pushBack(ChunkServer *svc);
-
- private:
-  int size;
-  ChunkServer *dummy;
-
-  static void listLink(ChunkServer *prev, ChunkServer *cur, ChunkServer *next);
 };
 
 } //namespace GFS
