@@ -1,13 +1,12 @@
-.PHONY: all MasterGen
+.PHONY: all MasterGen ChunkGen
 
-CHUNK_SERVER_MANAGER=ChunkServerManager_server.skeleton.cpp
-FILE_OP_MANAGER=FileOpManager_server.skeleton.cpp
-FILE_IO=FileIO_server.skeleton.cpp
-
-
-all: MasterGen
+all: MasterGen ChunkGen
 
 MasterGen: MasterServer.thrift
-	thrift -gen cpp MasterServer.thrift
-	cp gen-cpp MasterServer_server.skeleton.cpp ../../MasterServer/
+	thrift -gen cpp $<
+	cp gen-cpp/MasterServer_server.skeleton.cpp ../../MasterServer/
+
+ChunkGen: ChunkServer.thrift
+	thrift -gen cpp $<
+	cp gen-cpp/ChunkServer_server.skeleton.cpp ../../ChunkServer/
 

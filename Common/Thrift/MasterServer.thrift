@@ -7,11 +7,6 @@ struct ChunkServerInfo {
 4: list<i16>  availPort;
 }
 
-struct ReadResult {
-1: string buf;
-2: i64		count;
-}
-
 struct FileInfo {
 1: string ipAddr;
 2: string uuid;

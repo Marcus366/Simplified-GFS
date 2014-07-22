@@ -3,7 +3,7 @@
 all:
 	(cd Common && make)
 	(cd MasterServer && make)
-#	(cd ChunkServer && make)
+	(cd ChunkServer && make)
 #	(cd Client && make)
 
 clean:
