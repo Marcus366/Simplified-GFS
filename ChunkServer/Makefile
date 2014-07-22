@@ -1,13 +1,15 @@
 CC=g++
 CFLAGS=-Wall $(INCLUDE)
-INCLUDE=
-OBJS=ChunkServer_main.o ../MasterServer/gen-cpp/MasterServer.o \
-../MasterServer/gen-cpp/MasterServer_constants.o \
-../MasterServer/gen-cpp/MasterServer_types.o
+GENCPP=../Common/Thrift/gen-cpp
+INCLUDE=-I$(GENCPP)
+OBJS=ChunkServer_main.o $(GENCPP)/ChunkServer.o \
+$(GENCPP)/ChunkServer_constants.o $(GENCPP)/ChunkServer_types.o \
+$(GENCPP)/MasterServer.o $(GENCPP)/MasterServer_constants.o \
+$(GENCPP)/MasterServer_types.o
 
 
 %o: %cpp
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ChunkServer: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ -lpthread -lthrift
