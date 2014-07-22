@@ -12,7 +12,10 @@ class ChunkServerList {
   ChunkServerList();
 
   void insert(ChunkServer *svc);
+  void remove(ChunkServer *svc);
+  void removeByIpAddr(const std::string& ipAddr);
 
+  ChunkServer* findByIpAddr(const std::string& ipAddr);
  private:
   std::unordered_map<std::string, ChunkServer*> maps;
 

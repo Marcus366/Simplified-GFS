@@ -43,6 +43,8 @@ class MasterServerHandler : virtual public MasterServerIf {
 
   void unregisterChunkServer(const std::string& ipAddr) {
     // Your implementation goes here
+    chunkServers.removeByIpAddr(ipAddr);
+    //My implementation ends here
     printf("unregisterChunkServer\n");
   }
 
@@ -66,6 +68,8 @@ class MasterServerHandler : virtual public MasterServerIf {
 
   int32_t close(const int32_t fd) {
     // Your implementation goes here
+    //You need a function like findFileByFd() in namespace.cpp!
+    //And where is File.h, I cannot find it
     printf("close\n");
     return 0;
   }

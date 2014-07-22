@@ -14,3 +14,17 @@ void ChunkServerList::insert(ChunkServer *svc)
   maps.insert(umap::value_type(svc->getIpAddr(), svc));
 }
 
+void ChunkServerList::remove(ChunkServer *svc)
+{
+	//Hey, you can't do this
+}
+
+void ChunServerList::removeByIpAddr(const std::string& ipAddr) 
+{
+	maps.erase(ipAddr);
+}
+
+ChunkServer* ChunkServerList::findByIpAddr(const std::string& ipAddr) 
+{
+	return maps[ipAddr];
+}
