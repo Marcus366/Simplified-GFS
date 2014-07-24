@@ -17,6 +17,7 @@ void ChunkServerList::insert(ChunkServer *svc)
 void ChunkServerList::remove(ChunkServer *svc)
 {
 	//Hey, you can't do this
+	//Add this line to push
 }
 
 void ChunServerList::removeByIpAddr(const std::string& ipAddr) 
